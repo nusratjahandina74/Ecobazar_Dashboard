@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --color-forest: #0f3d24;
+  --color-leaf: #16a34a;
+  --color-leaf-dark: #15803d;
+  --color-mint: #f0faf3;
+  --color-ink: #14221a;
+  --color-slate: #5b6b61;
+  --color-line: #e3ebe5;
+  --color-canvas: #f6f8f6;
+  --color-online: #2563eb;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body { @apply bg-canvas text-ink font-sans antialiased; font-variant-numeric: tabular-nums; }
+  :focus-visible { outline: 2px solid var(--color-leaf); outline-offset: 2px; }
+  button:not(:disabled), [role="button"], select, label[for] { cursor: pointer; }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+}
+
+/* TipTap editor content */
+.tiptap { outline: none; min-height: 220px; padding: .75rem .9rem; font-size: .9rem; line-height: 1.6; }
+.tiptap p { margin: 0 0 .6rem; }
+.tiptap h1 { font-size: 1.5rem; font-weight: 700; margin: .8rem 0 .4rem; }
+.tiptap h2 { font-size: 1.25rem; font-weight: 700; margin: .8rem 0 .4rem; }
+.tiptap h3 { font-size: 1.1rem; font-weight: 600; margin: .8rem 0 .4rem; }
+.tiptap ul { list-style: disc; padding-left: 1.4rem; margin: 0 0 .6rem; }
+.tiptap ol { list-style: decimal; padding-left: 1.4rem; margin: 0 0 .6rem; }
+.tiptap blockquote { border-left: 3px solid #86efac; padding-left: .8rem; font-style: italic; margin: .6rem 0; }
+.tiptap a { color: #15803d; text-decoration: underline; }
+.tiptap img { max-width: 100%; border-radius: .5rem; }
+.tiptap p.is-editor-empty:first-child::before { content: attr(data-placeholder); color: #9aa9a0; float: left; height: 0; pointer-events: none; }
+.tiptap mark { background: #fef08a; padding: 0 .1em; }
+.rich-view p { margin: 0 0 .6rem; } .rich-view ul { list-style: disc; padding-left: 1.3rem; } .rich-view ol { list-style: decimal; padding-left: 1.3rem; }
+.rich-view h1, .rich-view h2, .rich-view h3 { font-weight: 600; margin: .6rem 0 .3rem; } .rich-view a { color: #15803d; text-decoration: underline; } .rich-view img { max-width: 100%; }
+
+@media print {
+  body * { visibility: hidden; }
+}
