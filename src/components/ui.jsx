@@ -52,7 +52,7 @@ export const CardHeader = ({ title, subtitle, action }) => (
   </div>
 );
 
-export const Spinner = ({ className }) => <Loader2 className={cx("animate-spin text-leaf", className)} size={22} />;
+export const Spinner = ({ className }) => <LeafLoader size={40} className={className} />;
 export const Skeleton = ({ className }) => <div aria-hidden="true" className={cx("skeleton rounded-md", className)} />;
 
 /* Table-shaped placeholder: header strip + rows with varied widths, so the page does not "jump" when data arrives. */
@@ -100,18 +100,25 @@ export function ListSkeleton({ rows = 4 }) {
   );
 }
 
-/* Full page placeholder used while a page chunk / record is loading (title, filter bar, table). */
-export function PageLoader() {
+/* Brand loader: a leaf that draws itself inside an orbiting ring, with bouncing dots. */
+export function LeafLoader({ size = 56, label = "", className = "" }) {
   return (
-    <div role="status" aria-label="Loading page" className="fade-up">
-      <div className="mb-5 space-y-2.5"><Skeleton className="w-48 h-7" /><Skeleton className="h-3.5 w-72 max-w-full opacity-70" /></div>
-      <Card>
-        <div className="flex flex-wrap gap-3 p-4"><Skeleton className="h-10 flex-1 min-w-52" /><Skeleton className="w-40 h-10" /><Skeleton className="w-40 h-10" /></div>
-        <TableSkeleton rows={6} cols={5} />
-      </Card>
+    <div role="status" aria-label={label || "Loading"} className={`flex flex-col items-center justify-center gap-3 text-leaf ${className}`}>
+      <svg width={size} height={size} viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <circle className="leaf-orbit" cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="28 104" />
+        <path className="leaf-draw" d="M14 33C13 21 21 13 34 12C35 25 28 34 14 33Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+        <path className="leaf-draw" d="M14 33L27 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+      <span className="flex items-center gap-1.5" aria-hidden="true"><i className="leaf-dot" /><i className="leaf-dot" /><i className="leaf-dot" /></span>
+      {label && <p className="text-sm text-slate">{label}</p>}
       <span className="sr-only">Loading...</span>
     </div>
   );
+}
+
+/* Shown while a page chunk is loading. */
+export function PageLoader() {
+  return <div className="min-h-[60vh] flex items-center justify-center fade-up"><LeafLoader size={64} label="Loading" /></div>;
 }
 
 /* Branded splash for the very first load / session check. */
