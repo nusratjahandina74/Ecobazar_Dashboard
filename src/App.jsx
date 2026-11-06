@@ -5,7 +5,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
-import { PageLoader, EmptyState } from "./components/ui";
+import { PageLoader, SplashScreen, EmptyState } from "./components/ui";
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Orders = lazy(() => import("./pages/Orders"));
@@ -29,7 +29,7 @@ const queryClient = new QueryClient({
 
 function Protected() {
   const { user, booting } = useAuth();
-  if (booting) return <PageLoader label="Signing you in..." />;
+  if (booting) return <SplashScreen />;
   if (!user) return <Navigate to="/login" replace />;
   return <Layout />;
 }

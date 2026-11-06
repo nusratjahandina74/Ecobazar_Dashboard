@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { api, assetUrl } from "../lib/api";
-import { Badge, Button, Card, ConfirmDialog, EmptyState, ErrorState, Field, IconButton, Input, Modal, PageHeader, PageLoader, Switch } from "../components/ui";
+import { Badge, Button, Card, ConfirmDialog, EmptyState, ErrorState, Field, IconButton, Input, Modal, PageHeader, ListSkeleton, Switch } from "../components/ui";
 import { useToast } from "../context/ToastContext";
 
 const blank = { title: "", subtitle: "", link: "", buttonText: "", order: 0, isActive: true };
@@ -47,7 +47,7 @@ export default function Banners() {
   return (
     <>
       <PageHeader title="Banners" subtitle="Home page slider." actions={<Button onClick={() => setEdit({})}><Plus size={16} /> Add banner</Button>} />
-      {q.isLoading ? <PageLoader /> : q.isError ? <ErrorState error={q.error} onRetry={q.refetch} /> : rows.length === 0 ? (
+      {q.isLoading ? <ListSkeleton rows={4} /> : q.isError ? <ErrorState error={q.error} onRetry={q.refetch} /> : rows.length === 0 ? (
         <Card><EmptyState title="No banners yet" text="Add a banner to show a slider on your shop home page." action={<Button onClick={() => setEdit({})}>Add banner</Button>} /></Card>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

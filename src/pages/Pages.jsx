@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Pencil, Plus, Trash2 } from "lucide-react";
 import { api, STORE_URL } from "../lib/api";
-import { Badge, Button, Card, ConfirmDialog, EmptyState, ErrorState, Field, IconButton, Input, PageHeader, PageLoader, Switch, Td, Th } from "../components/ui";
+import { Badge, Button, Card, ConfirmDialog, EmptyState, ErrorState, Field, IconButton, Input, PageHeader, PageLoader, ListSkeleton, Switch, Td, Th } from "../components/ui";
 import RichTextEditor from "../components/RichTextEditor";
 import { useToast } from "../context/ToastContext";
 
@@ -49,7 +49,7 @@ export default function Pages() {
     <>
       <PageHeader title="Pages" subtitle="About us, privacy policy, FAQ and more. Edit the text any time." actions={<Button onClick={() => setEditing(null)}><Plus size={16} /> New page</Button>} />
       <Card>
-        {q.isLoading ? <PageLoader /> : q.isError ? <ErrorState error={q.error} onRetry={q.refetch} /> : rows.length === 0 ? <EmptyState title="No pages yet" /> : (
+        {q.isLoading ? <ListSkeleton rows={4} /> : q.isError ? <ErrorState error={q.error} onRetry={q.refetch} /> : rows.length === 0 ? <EmptyState title="No pages yet" /> : (
           <div className="overflow-x-auto"><table className="w-full text-sm">
             <thead><tr><Th>Title</Th><Th>Address</Th><Th>Status</Th><Th className="text-right">Actions</Th></tr></thead>
             <tbody className="divide-y divide-line">{rows.map((p) => (

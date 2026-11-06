@@ -3,7 +3,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { Plus } from "lucide-react";
 import { api } from "../lib/api";
 import { dateOnly, fullName } from "../lib/format";
-import { Badge, Button, Card, EmptyState, ErrorState, Field, Input, Modal, PageHeader, Select, Skeleton, Td, Th } from "../components/ui";
+import { Badge, Button, Card, EmptyState, ErrorState, Field, Input, Modal, PageHeader, Select, TableSkeleton, Td, Th } from "../components/ui";
 import { useToast } from "../context/ToastContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -47,7 +47,7 @@ export default function Team() {
       <PageHeader title="Team & roles" subtitle="Control who can sign in to this dashboard and what they can do." actions={<Button onClick={() => setAdding(true)}><Plus size={16} /> Add member</Button>} />
       <div className="grid gap-3 sm:grid-cols-3 mb-5">{ROLES.map((r) => <Card key={r.value} className="p-4"><Badge tone={roleTone[r.value]}>{r.label}</Badge><p className="text-sm text-slate mt-2">{r.desc}</p></Card>)}</div>
       <Card>
-        {q.isLoading ? <div className="p-4 space-y-3">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-12" />)}</div>
+        {q.isLoading ? <TableSkeleton rows={4} cols={5} />
           : q.isError && !q.data ? <ErrorState error={q.error} onRetry={q.refetch} />
           : rows.length === 0 ? <EmptyState title="No team members" /> : (
             <div className="overflow-x-auto"><table className="w-full text-sm">

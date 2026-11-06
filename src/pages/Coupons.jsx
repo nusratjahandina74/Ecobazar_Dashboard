@@ -3,7 +3,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { api } from "../lib/api";
 import { bdt, dateOnly } from "../lib/format";
-import { Badge, Button, Card, ConfirmDialog, EmptyState, ErrorState, Field, IconButton, Input, Modal, PageHeader, Pagination, Select, Skeleton, Switch, Td, Th } from "../components/ui";
+import { Badge, Button, Card, ConfirmDialog, EmptyState, ErrorState, Field, IconButton, Input, Modal, PageHeader, Pagination, Select, TableSkeleton, Switch, Td, Th } from "../components/ui";
 import { useToast } from "../context/ToastContext";
 
 const TYPES = { percent: "Percent off", fixed: "Fixed amount off", free_delivery: "Free delivery" };
@@ -61,7 +61,7 @@ export default function Coupons() {
     <>
       <PageHeader title="Coupons" subtitle="Discount codes for sales, Eid offers and first orders." actions={<Button onClick={() => setEdit({})}><Plus size={16} /> Create coupon</Button>} />
       <Card>
-        {q.isLoading ? <div className="p-4 space-y-3">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-12" />)}</div>
+        {q.isLoading ? <TableSkeleton rows={4} cols={6} />
           : q.isError && !q.data ? <ErrorState error={q.error} onRetry={q.refetch} />
           : rows.length === 0 ? <EmptyState title="No coupons yet" text="Create a code like EID20 to boost sales." action={<Button onClick={() => setEdit({})}>Create coupon</Button>} /> : (
             <div className="overflow-x-auto"><table className="w-full text-sm">

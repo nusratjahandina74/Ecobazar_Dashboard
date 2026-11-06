@@ -3,7 +3,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { Mail, Phone, Trash2 } from "lucide-react";
 import { api } from "../lib/api";
 import { dateTime, timeAgo } from "../lib/format";
-import { Button, Card, ConfirmDialog, EmptyState, ErrorState, IconButton, PageHeader, Pagination, Skeleton, Tabs, Textarea } from "../components/ui";
+import { Button, Card, ConfirmDialog, EmptyState, ErrorState, IconButton, PageHeader, Pagination, ListSkeleton, Tabs, Textarea } from "../components/ui";
 import { useToast } from "../context/ToastContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -52,7 +52,7 @@ export default function Messages() {
       <PageHeader title="Messages" subtitle="Enquiries sent from the shop's contact page." />
       <Card>
         <div className="px-2"><Tabs value={tab} onChange={(t) => { setTab(t); setPage(1); }} tabs={[{ key: "all", label: "All" }, { key: "unread", label: "Unread", count: q.data?.unread }]} /></div>
-        {q.isLoading ? <div className="p-4 space-y-3">{Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-14" />)}</div>
+        {q.isLoading ? <ListSkeleton rows={5} />
           : q.isError && !q.data ? <ErrorState error={q.error} onRetry={q.refetch} />
           : rows.length === 0 ? <EmptyState title={tab === "unread" ? "No unread messages" : "No messages yet"} /> : <ul>{rows.map((m) => <Item key={m._id} m={m} canWrite={can("messages:write")} />)}</ul>}
         <Pagination pagination={q.data?.pagination} onPage={setPage} onLimit={(n) => { setLimit(n); setPage(1); }} />

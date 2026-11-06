@@ -13,7 +13,13 @@ export function AuthProvider({ children }) {
   useEffect(() => { setUnauthorizedHandler(logout); return () => setUnauthorizedHandler(null); }, [logout]);
 
   const loadSession = useCallback(async () => {
-    const [{ user: me }, p] = await Promise.all([api.me().then((r) => ({ user: r.user || r.data || r })), api.permissions()]);
+    let me, p;
+    try {
+      [{ user: me }, p] = await Promise.all([api.me().then((r) => ({ user: r.user || r.data || r })), api.permissions()]);
+    } catch (e) {
+      if (e.status === 404) throw new Error("The backend server is outdated (admin API not found). Deploy the latest Backend to Render, then try again.");
+      throw e;
+    }
     if (!TEAM_ROLES.includes(me.role)) throw new Error("This account does not have dashboard access.");
     setUser(me); setPermissions(p.data.permissions);
   }, []);

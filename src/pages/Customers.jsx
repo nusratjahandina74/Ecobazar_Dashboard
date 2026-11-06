@@ -3,7 +3,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import { api } from "../lib/api";
 import { bdt, dateOnly, fullName } from "../lib/format";
-import { Badge, Card, EmptyState, ErrorState, Input, PageHeader, Pagination, Skeleton, Td, Th } from "../components/ui";
+import { Badge, Card, EmptyState, ErrorState, Input, PageHeader, Pagination, TableSkeleton, Td, Th } from "../components/ui";
 import useDebounce from "../components/useDebounce";
 
 export default function Customers() {
@@ -15,7 +15,7 @@ export default function Customers() {
       <PageHeader title="Customers" subtitle="People who registered in your shop." />
       <Card>
         <div className="p-4"><div className="relative max-w-md"><Search size={16} className="absolute left-3 top-3 text-slate/60" /><Input aria-label="Search customers" className="pl-9" placeholder="Search name, email or phone" value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} /></div></div>
-        {list.isLoading ? <div className="p-4 space-y-3">{Array.from({ length: 6 }, (_, i) => <Skeleton key={i} className="h-12" />)}</div>
+        {list.isLoading ? <TableSkeleton rows={6} cols={5} avatar />
           : list.isError && !list.data ? <ErrorState error={list.error} onRetry={list.refetch} />
           : rows.length === 0 ? <EmptyState title="No customers found" /> : (
             <div className="overflow-x-auto"><table className="w-full text-sm">

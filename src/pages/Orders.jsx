@@ -4,7 +4,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { Download, Eye, Printer, Search, Truck, X } from "lucide-react";
 import { api } from "../lib/api";
 import { bdt, dateTime, nextStatuses, orderStatusMeta, ORDER_STATUS, PROVIDERS, ZONES } from "../lib/format";
-import { Button, Card, Checkbox, EmptyState, ErrorState, IconButton, Input, PageHeader, Pagination, Select, Skeleton, Tabs, Th, Td } from "../components/ui";
+import { Button, Card, Checkbox, EmptyState, ErrorState, IconButton, Input, PageHeader, Pagination, Select, TableSkeleton, Tabs, Th, Td } from "../components/ui";
 import { MethodBadge, OrderStatusBadge, PaymentBadge } from "../components/badges";
 import OrderModal from "../components/OrderModal";
 import useDebounce from "../components/useDebounce";
@@ -19,9 +19,9 @@ const Row = memo(function Row({ o, selected, onSelect, onView, onStatus, onInvoi
   return (
     <tr className={selected ? "bg-mint/60" : undefined}>
       <Td className="w-10"><Checkbox checked={selected} onChange={() => onSelect(o._id)} aria-label={`Select order ${o.orderNumber}`} /></Td>
-      <Td><button onClick={() => onView(o._id)} className="font-semibold text-leaf-dark">{o.orderNumber || o._id.slice(-6)}</button><p className="text-xs text-slate">{dateTime(o.createdAt)}</p></Td>
-      <Td><p className="font-medium">{o.shippingAddress?.name}</p><p className="text-xs text-slate">{o.shippingAddress?.phone}</p></Td>
-      <Td className="text-slate">{o.products?.length} {o.products?.length === 1 ? "item" : "items"}<p className="text-xs">{ZONES[o.deliveryZone]}</p></Td>
+      <Td className="whitespace-nowrap"><button onClick={() => onView(o._id)} className="font-semibold text-leaf-dark">{o.orderNumber || o._id.slice(-6)}</button><p className="text-xs text-slate">{dateTime(o.createdAt)}</p></Td>
+      <Td className="whitespace-nowrap"><p className="font-medium">{o.shippingAddress?.name}</p><p className="text-xs text-slate">{o.shippingAddress?.phone}</p></Td>
+      <Td className="whitespace-nowrap text-slate">{o.products?.length} {o.products?.length === 1 ? "item" : "items"}<p className="text-xs">{ZONES[o.deliveryZone]}</p></Td>
       <Td className="font-semibold text-right">{bdt(o.totalAmount)}</Td>
       <Td><MethodBadge method={o.paymentMethod} /><div className="mt-1"><PaymentBadge status={o.paymentStatus} /></div></Td>
       <Td>
@@ -113,12 +113,16 @@ export default function Orders() {
 
       <Card>
         <div className="px-2 pt-1"><Tabs tabs={tabs} value={tab} onChange={setTab} /></div>
-        <div className="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-5">
-          <div className="relative lg:col-span-2"><Search size={16} className="absolute left-3 top-3 text-slate/60" />
-            <Input aria-label="Search orders" className="pl-9" placeholder="Search order no., phone, name or tracking ID" value={q} onChange={(e) => resetPage(setQ)(e.target.value)} /></div>
-          <Select aria-label="Payment type" value={method} onChange={(e) => resetPage(setMethod)(e.target.value)}><option value="all">All payments</option><option value="cod">Cash on delivery</option><option value="online">Online</option></Select>
-          <Select aria-label="Delivery area" value={zone} onChange={(e) => resetPage(setZone)(e.target.value)}><option value="all">All areas</option><option value="inside_dhaka">Inside Dhaka</option><option value="outside_dhaka">Outside Dhaka</option></Select>
-          <div className="flex items-center gap-2"><Input type="date" aria-label="From date" value={from} onChange={(e) => resetPage(setFrom)(e.target.value)} /><span className="text-slate">to</span><Input type="date" aria-label="To date" value={to} onChange={(e) => resetPage(setTo)(e.target.value)} /></div>
+        <div className="flex flex-wrap items-center gap-3 p-4">
+          <div className="relative flex-1 basis-64 min-w-0"><Search size={16} className="absolute left-3 top-3 text-slate/60" />
+            <Input aria-label="Search orders" className="pl-9" placeholder="Search order, phone, name or tracking ID" value={q} onChange={(e) => resetPage(setQ)(e.target.value)} /></div>
+          <Select aria-label="Payment type" className="w-full sm:w-44" value={method} onChange={(e) => resetPage(setMethod)(e.target.value)}><option value="all">All payments</option><option value="cod">Cash on delivery</option><option value="online">Online</option></Select>
+          <Select aria-label="Delivery area" className="w-full sm:w-44" value={zone} onChange={(e) => resetPage(setZone)(e.target.value)}><option value="all">All areas</option><option value="inside_dhaka">Inside Dhaka</option><option value="outside_dhaka">Outside Dhaka</option></Select>
+          <div className="flex items-center w-full gap-2 sm:w-auto">
+            <Input type="date" aria-label="From date" className="min-w-0 flex-1 sm:w-40 sm:flex-none" value={from} onChange={(e) => resetPage(setFrom)(e.target.value)} />
+            <span className="text-sm text-slate">to</span>
+            <Input type="date" aria-label="To date" className="min-w-0 flex-1 sm:w-40 sm:flex-none" value={to} onChange={(e) => resetPage(setTo)(e.target.value)} />
+          </div>
         </div>
 
         {selected.size > 0 && (
@@ -135,7 +139,7 @@ export default function Orders() {
           </div>
         )}
 
-        {list.isLoading ? <div className="p-4 space-y-3">{Array.from({ length: 8 }, (_, i) => <Skeleton key={i} className="h-12" />)}</div>
+        {list.isLoading ? <TableSkeleton rows={8} cols={9} />
           : list.isError && !list.data ? <ErrorState error={list.error} onRetry={list.refetch} />
           : rows.length === 0 ? <EmptyState title="No orders found" text={dq || method !== "all" || zone !== "all" || from || to ? "Try clearing the filters." : "New orders will appear here automatically."} />
           : (

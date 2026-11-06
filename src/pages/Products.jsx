@@ -4,7 +4,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { Eye, Pencil, Plus, Search, Trash2, X, ImageOff } from "lucide-react";
 import { api, assetUrl } from "../lib/api";
 import { bdt, PRODUCT_STATUS } from "../lib/format";
-import { Badge, Button, Card, Checkbox, ConfirmDialog, EmptyState, ErrorState, IconButton, Input, PageHeader, Pagination, Select, Skeleton, Th, Td } from "../components/ui";
+import { Badge, Button, Card, Checkbox, ConfirmDialog, EmptyState, ErrorState, IconButton, Input, PageHeader, Pagination, Select, TableSkeleton, Th, Td } from "../components/ui";
 import ProductModal from "../components/ProductModal";
 import useDebounce from "../components/useDebounce";
 import { useToast } from "../context/ToastContext";
@@ -89,12 +89,12 @@ export default function Products() {
       <PageHeader title="Products" subtitle={counts ? `${counts.active} active · ${counts.pending} pending · ${counts.inactive} inactive` : "Manage your catalog"}
         actions={writable && <Link to="/products/new"><Button><Plus size={16} />Add product</Button></Link>} />
       <Card>
-        <div className="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-5">
-          <div className="relative lg:col-span-2"><Search size={16} className="absolute left-3 top-3 text-slate/60" /><Input aria-label="Search products" className="pl-9" placeholder="Search name, SKU, brand or tag" value={q} onChange={(e) => reset(setQ)(e.target.value)} /></div>
-          <Select aria-label="Status" value={status} onChange={(e) => reset(setStatus)(e.target.value)}><option value="all">All statuses</option>{PRODUCT_STATUS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}</Select>
-          <Select aria-label="Category" value={category} onChange={(e) => reset(setCategory)(e.target.value)}><option value="all">All categories</option>{cats.map((c) => <option key={c.name} value={c.name}>{c.name} ({c.count})</option>)}</Select>
-          <Select aria-label="Stock" value={stock} onChange={(e) => reset(setStock)(e.target.value)}><option value="all">Any stock</option><option value="in">In stock</option><option value="low">Low stock</option><option value="out">Out of stock</option></Select>
-          <Select aria-label="Sort" value={sort} onChange={(e) => reset(setSort)(e.target.value)} className="lg:col-start-5"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="name">Name A-Z</option><option value="price_asc">Price: low to high</option><option value="price_desc">Price: high to low</option><option value="stock_asc">Stock: low to high</option><option value="best_selling">Best selling</option></Select>
+        <div className="flex flex-wrap items-center gap-3 p-4">
+          <div className="relative flex-1 basis-64 min-w-0"><Search size={16} className="absolute left-3 top-3 text-slate/60" /><Input aria-label="Search products" className="pl-9" placeholder="Search name, SKU, brand or tag" value={q} onChange={(e) => reset(setQ)(e.target.value)} /></div>
+          <Select aria-label="Status" className="w-full sm:w-44" value={status} onChange={(e) => reset(setStatus)(e.target.value)}><option value="all">All statuses</option>{PRODUCT_STATUS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}</Select>
+          <Select aria-label="Category" className="w-full sm:w-44" value={category} onChange={(e) => reset(setCategory)(e.target.value)}><option value="all">All categories</option>{cats.map((c) => <option key={c.name} value={c.name}>{c.name} ({c.count})</option>)}</Select>
+          <Select aria-label="Stock" className="w-full sm:w-44" value={stock} onChange={(e) => reset(setStock)(e.target.value)}><option value="all">Any stock</option><option value="in">In stock</option><option value="low">Low stock</option><option value="out">Out of stock</option></Select>
+          <Select aria-label="Sort" className="w-full sm:w-44" value={sort} onChange={(e) => reset(setSort)(e.target.value)}><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="name">Name A-Z</option><option value="price_asc">Price: low to high</option><option value="price_desc">Price: high to low</option><option value="stock_asc">Stock: low to high</option><option value="best_selling">Best selling</option></Select>
         </div>
 
         {selected.size > 0 && writable && (
@@ -107,7 +107,7 @@ export default function Products() {
           </div>
         )}
 
-        {list.isLoading ? <div className="p-4 space-y-3">{Array.from({ length: 8 }, (_, i) => <Skeleton key={i} className="h-14" />)}</div>
+        {list.isLoading ? <TableSkeleton rows={8} cols={7} avatar />
           : list.isError && !list.data ? <ErrorState error={list.error} onRetry={list.refetch} />
           : rows.length === 0 ? <EmptyState title="No products found" text="Try different filters, or add your first product." action={writable && <Link to="/products/new"><Button><Plus size={16} />Add product</Button></Link>} />
           : (

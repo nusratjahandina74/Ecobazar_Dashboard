@@ -3,7 +3,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { Check, Star, Trash2, X } from "lucide-react";
 import { api, assetUrl } from "../lib/api";
 import { dateOnly } from "../lib/format";
-import { Badge, Button, Card, ConfirmDialog, EmptyState, ErrorState, IconButton, PageHeader, Pagination, Skeleton, Tabs, Textarea } from "../components/ui";
+import { Badge, Button, Card, ConfirmDialog, EmptyState, ErrorState, IconButton, PageHeader, Pagination, ListSkeleton, Tabs, Textarea } from "../components/ui";
 import { useToast } from "../context/ToastContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -48,7 +48,7 @@ export default function Reviews() {
       <PageHeader title="Reviews" subtitle="Customers can review products they received. Approve what appears in the shop." />
       <Card>
         <div className="px-2"><Tabs value={tab} onChange={(t) => { setTab(t); setPage(1); }} tabs={[{ key: "pending", label: "Waiting", count: q.data?.pending }, { key: "approved", label: "Published" }, { key: "rejected", label: "Rejected" }, { key: "all", label: "All" }]} /></div>
-        {q.isLoading ? <div className="p-4 space-y-3">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-20" />)}</div>
+        {q.isLoading ? <ListSkeleton rows={4} />
           : q.isError && !q.data ? <ErrorState error={q.error} onRetry={q.refetch} />
           : rows.length === 0 ? <EmptyState title={tab === "pending" ? "Nothing waiting for approval" : "No reviews here"} text="Reviews appear after customers receive their orders." /> : <ul>{rows.map((r) => <Item key={r._id} r={r} canWrite={can("reviews:write")} />)}</ul>}
         <Pagination pagination={q.data?.pagination} onPage={setPage} onLimit={(n) => { setLimit(n); setPage(1); }} />

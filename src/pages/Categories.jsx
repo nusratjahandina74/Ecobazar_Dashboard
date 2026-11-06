@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Plus, Trash2, Download } from "lucide-react";
 import { api, assetUrl } from "../lib/api";
-import { Badge, Button, Card, ConfirmDialog, EmptyState, ErrorState, Field, IconButton, Input, Modal, PageHeader, PageLoader, Switch, Textarea } from "../components/ui";
+import { Badge, Button, Card, ConfirmDialog, EmptyState, ErrorState, Field, IconButton, Input, Modal, PageHeader, ListSkeleton, Switch, Textarea } from "../components/ui";
 import { useToast } from "../context/ToastContext";
 
 function CategoryModal({ cat, onClose }) {
@@ -53,7 +53,7 @@ export default function Categories() {
           <p className="text-sm"><b>{unmanaged.length} categories</b> are used by products but not managed yet ({unmanaged.slice(0, 4).join(", ")}{unmanaged.length > 4 ? "..." : ""}). Add them to control their image, order and visibility.</p>
           <Button variant="secondary" loading={imp.isPending} onClick={() => imp.mutate()}><Download size={16} /> Add them all</Button>
         </Card>)}
-      {q.isLoading ? <PageLoader /> : q.isError ? <ErrorState error={q.error} onRetry={q.refetch} /> : rows.length === 0 ? (
+      {q.isLoading ? <ListSkeleton rows={4} /> : q.isError ? <ErrorState error={q.error} onRetry={q.refetch} /> : rows.length === 0 ? (
         <Card><EmptyState title="No categories yet" text="Add your first category, e.g. Fruits or Electronics." action={<Button onClick={() => setEdit({})}>Add category</Button>} /></Card>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

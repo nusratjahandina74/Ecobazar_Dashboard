@@ -45,7 +45,7 @@ export const Badge = ({ tone = "gray", children, className }) => (
   <span className={cx("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset whitespace-nowrap", TONES[tone], className)}>{children}</span>
 );
 
-export const Card = ({ className, children }) => <section className={cx("rounded-xl border border-line bg-white", className)}>{children}</section>;
+export const Card = ({ className, children }) => <section className={cx("min-w-0 max-w-full rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(15,61,36,.04)]", className)}>{children}</section>;
 export const CardHeader = ({ title, subtitle, action }) => (
   <div className="flex items-start justify-between gap-3 px-5 pt-5">
     <div><h2 className="text-base font-semibold text-ink">{title}</h2>{subtitle && <p className="text-sm text-slate mt-0.5">{subtitle}</p>}</div>{action}
@@ -53,9 +53,92 @@ export const CardHeader = ({ title, subtitle, action }) => (
 );
 
 export const Spinner = ({ className }) => <Loader2 className={cx("animate-spin text-leaf", className)} size={22} />;
-export const Skeleton = ({ className }) => <div className={cx("animate-pulse rounded-md bg-forest/10", className)} />;
-export function PageLoader({ label = "Loading..." }) {
-  return <div className="flex items-center justify-center gap-3 py-24 text-sm text-slate" role="status"><Spinner />{label}</div>;
+export const Skeleton = ({ className }) => <div aria-hidden="true" className={cx("skeleton rounded-md", className)} />;
+
+/* Table-shaped placeholder: header strip + rows with varied widths, so the page does not "jump" when data arrives. */
+const WIDTHS = ["w-24", "w-40", "w-16", "w-28", "w-20", "w-32", "w-14", "w-24"];
+export function TableSkeleton({ rows = 6, cols = 6, avatar = false }) {
+  const grid = { gridTemplateColumns: `1.5fr repeat(${Math.max(cols - 1, 1)}, minmax(0, 1fr))` };
+  return (
+    <div role="status" aria-label="Loading" className="overflow-hidden">
+      <div className="grid items-center gap-6 px-4 py-3 border-y border-line bg-canvas" style={grid}>
+        {Array.from({ length: cols }, (_, c) => <Skeleton key={c} className={cx("h-3 max-w-full", WIDTHS[(c * 3) % WIDTHS.length])} />)}
+      </div>
+      <div className="divide-y divide-line">
+        {Array.from({ length: rows }, (_, r) => (
+          <div key={r} className="grid items-center gap-6 px-4 py-4" style={grid}>
+            {Array.from({ length: cols }, (_, c) => (
+              <div key={c} className="flex items-center min-w-0 gap-3">
+                {avatar && c === 0 && <Skeleton className="w-10 h-10 rounded-lg shrink-0" />}
+                <div className="flex-1 min-w-0 space-y-2">
+                  <Skeleton className={cx("h-3.5 max-w-full", WIDTHS[(r + c * 2) % WIDTHS.length])} />
+                  {c === 0 && <Skeleton className="w-20 h-2.5 max-w-full opacity-70" />}
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+      <span className="sr-only">Loading...</span>
+    </div>
+  );
+}
+
+/* Stacked cards placeholder (reviews, messages, banners, categories ...) */
+export function ListSkeleton({ rows = 4 }) {
+  return (
+    <div role="status" aria-label="Loading" className="p-4 space-y-3">
+      {Array.from({ length: rows }, (_, i) => (
+        <div key={i} className="flex items-center gap-4 p-4 border rounded-xl border-line">
+          <Skeleton className="w-14 h-14 rounded-xl shrink-0" />
+          <div className="flex-1 space-y-2.5"><Skeleton className="h-3.5 w-2/5" /><Skeleton className="h-3 w-4/5 opacity-70" /></div>
+          <Skeleton className="hidden w-20 h-8 rounded-lg sm:block" />
+        </div>
+      ))}
+      <span className="sr-only">Loading...</span>
+    </div>
+  );
+}
+
+/* Full page placeholder used while a page chunk / record is loading (title, filter bar, table). */
+export function PageLoader() {
+  return (
+    <div role="status" aria-label="Loading page" className="fade-up">
+      <div className="mb-5 space-y-2.5"><Skeleton className="w-48 h-7" /><Skeleton className="h-3.5 w-72 max-w-full opacity-70" /></div>
+      <Card>
+        <div className="flex flex-wrap gap-3 p-4"><Skeleton className="h-10 flex-1 min-w-52" /><Skeleton className="w-40 h-10" /><Skeleton className="w-40 h-10" /></div>
+        <TableSkeleton rows={6} cols={5} />
+      </Card>
+      <span className="sr-only">Loading...</span>
+    </div>
+  );
+}
+
+/* Branded splash for the very first load / session check. */
+export function SplashScreen({ label = "Signing you in" }) {
+  return (
+    <div role="status" className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-6 bg-canvas">
+      <div className="relative flex items-center justify-center w-20 h-20">
+        <span className="absolute inset-0 rounded-3xl bg-leaf/30 ring-pulse" />
+        <span className="absolute inset-0 rounded-3xl bg-leaf/20 ring-pulse [animation-delay:.5s]" />
+        <img src="/favicon.svg" alt="" className="relative w-16 h-16 shadow-lg rounded-2xl" />
+      </div>
+      <div className="text-center">
+        <p className="text-lg font-bold text-ink">EcoBazaar <span className="font-medium text-slate">Admin</span></p>
+        <p className="mt-1 text-sm text-slate">{label}...</p>
+      </div>
+      <div className="w-44 h-1 overflow-hidden rounded-full bg-forest/10"><div className="w-1/3 h-full rounded-full bg-leaf topbar-run" /></div>
+    </div>
+  );
+}
+
+/* Thin progress bar fixed to the top of the screen while any request is running. */
+export function TopProgress({ active }) {
+  return (
+    <div aria-hidden="true" className={cx("fixed top-0 left-0 right-0 z-[90] h-0.5 overflow-hidden transition-opacity duration-300", active ? "opacity-100" : "opacity-0")}>
+      <div className="w-1/3 h-full rounded-full bg-leaf topbar-run" />
+    </div>
+  );
 }
 export function EmptyState({ title, text, action, icon: Icon = Inbox }) {
   return (
