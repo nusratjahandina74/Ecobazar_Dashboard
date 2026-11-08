@@ -9,7 +9,7 @@ export function Button({ variant = "primary", size = "md", loading, className, c
     outline: "border border-line bg-white text-ink", ghost: "text-slate",
     danger: "bg-red-600 text-white", soft: "bg-mint text-leaf-dark",
   }[variant];
-  const s = { sm: "h-8 px-3 text-xs", md: "h-10 px-4 text-sm", lg: "h-11 px-5 text-sm" }[size];
+  const s = { sm: "h-8 px-3 text-xs pointer-coarse:h-10", md: "h-10 px-4 text-sm", lg: "h-11 px-5 text-sm" }[size];
   return (
     <button {...p} disabled={p.disabled || loading} className={cx("inline-flex items-center justify-center gap-2 rounded-lg font-semibold whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]", v, s, className)}>
       {loading && <Loader2 size={15} className="animate-spin" />}{children}
@@ -17,7 +17,7 @@ export function Button({ variant = "primary", size = "md", loading, className, c
   );
 }
 export const IconButton = ({ label, className, children, ...p }) => (
-  <button {...p} aria-label={label} title={label} className={cx("inline-flex items-center justify-center w-9 h-9 rounded-lg border border-line bg-white text-slate disabled:opacity-40", className)}>{children}</button>
+  <button {...p} aria-label={label} title={label} className={cx("inline-flex items-center justify-center w-9 h-9 pointer-coarse:w-10 pointer-coarse:h-10 shrink-0 rounded-lg border border-line bg-white text-slate disabled:opacity-40", className)}>{children}</button>
 );
 
 const fieldBase = "w-full rounded-lg border border-line bg-white px-3 text-sm text-ink placeholder:text-slate/50 focus:outline-none focus:ring-4 focus:ring-leaf/15 focus:border-leaf disabled:bg-canvas disabled:text-slate";
@@ -47,8 +47,8 @@ export const Badge = ({ tone = "gray", children, className }) => (
 
 export const Card = ({ className, children }) => <section className={cx("min-w-0 max-w-full rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(15,61,36,.04)]", className)}>{children}</section>;
 export const CardHeader = ({ title, subtitle, action }) => (
-  <div className="flex items-start justify-between gap-3 px-5 pt-5">
-    <div><h2 className="text-base font-semibold text-ink">{title}</h2>{subtitle && <p className="text-sm text-slate mt-0.5">{subtitle}</p>}</div>{action}
+  <div className="flex flex-wrap items-start justify-between gap-3 px-4 sm:px-5 pt-5">
+    <div className="min-w-0 flex-1 basis-56"><h2 className="text-base font-semibold text-ink">{title}</h2>{subtitle && <p className="text-sm text-slate mt-0.5">{subtitle}</p>}</div>{action}
   </div>
 );
 
@@ -61,12 +61,12 @@ export function TableSkeleton({ rows = 6, cols = 6, avatar = false }) {
   const grid = { gridTemplateColumns: `1.5fr repeat(${Math.max(cols - 1, 1)}, minmax(0, 1fr))` };
   return (
     <div role="status" aria-label="Loading" className="overflow-hidden">
-      <div className="grid items-center gap-6 px-4 py-3 border-y border-line bg-canvas" style={grid}>
+      <div className="grid grid-cols-1 items-center gap-6 px-4 py-3 border-y border-line bg-canvas" style={grid}>
         {Array.from({ length: cols }, (_, c) => <Skeleton key={c} className={cx("h-3 max-w-full", WIDTHS[(c * 3) % WIDTHS.length])} />)}
       </div>
       <div className="divide-y divide-line">
         {Array.from({ length: rows }, (_, r) => (
-          <div key={r} className="grid items-center gap-6 px-4 py-4" style={grid}>
+          <div key={r} className="grid grid-cols-1 items-center gap-6 px-4 py-4" style={grid}>
             {Array.from({ length: cols }, (_, c) => (
               <div key={c} className="flex items-center min-w-0 gap-3">
                 {avatar && c === 0 && <Skeleton className="w-10 h-10 rounded-lg shrink-0" />}
@@ -149,7 +149,7 @@ export function TopProgress({ active }) {
 }
 export function EmptyState({ title, text, action, icon: Icon = Inbox }) {
   return (
-    <div className="flex flex-col items-center text-center py-16 px-4">
+    <div className="flex flex-col items-center text-center py-12 sm:py-16 px-4">
       <div className="w-12 h-12 rounded-full bg-mint flex items-center justify-center text-leaf mb-3"><Icon size={22} /></div>
       <p className="font-semibold text-ink">{title}</p>
       {text && <p className="text-sm text-slate mt-1 max-w-sm">{text}</p>}
@@ -175,7 +175,7 @@ export function Switch({ checked, onChange, label, disabled }) {
     </button>
   );
 }
-export const Checkbox = ({ className, ...p }) => <input type="checkbox" {...p} className={cx("h-4 w-4 rounded border-line accent-[#16a34a]", className)} />;
+export const Checkbox = ({ className, ...p }) => <input type="checkbox" {...p} className={cx("h-4 w-4 pointer-coarse:h-5 pointer-coarse:w-5 rounded border-line accent-[#16a34a]", className)} />;
 
 export function Modal({ open, onClose, title, subtitle, children, footer, size = "lg" }) {
   const ref = useRef(null);
@@ -192,13 +192,13 @@ export function Modal({ open, onClose, title, subtitle, children, footer, size =
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-6">
       <div className="absolute inset-0 bg-forest/50" onClick={onClose} aria-hidden="true" />
-      <div ref={ref} tabIndex={-1} role="dialog" aria-modal="true" aria-label={title} className={cx("relative flex flex-col w-full bg-white sm:rounded-2xl rounded-t-2xl shadow-2xl max-h-[92vh] outline-none", w)}>
+      <div ref={ref} tabIndex={-1} role="dialog" aria-modal="true" aria-label={title} className={cx("relative flex flex-col w-full bg-white sm:rounded-2xl rounded-t-2xl shadow-2xl max-h-[92dvh] outline-none", w)}>
         <div className="flex items-start justify-between gap-4 px-5 sm:px-6 py-4 border-b border-line">
           <div className="min-w-0"><h2 className="text-lg font-semibold text-ink truncate">{title}</h2>{subtitle && <div className="text-sm text-slate mt-0.5">{subtitle}</div>}</div>
           <IconButton label="Close" onClick={onClose}><X size={18} /></IconButton>
         </div>
-        <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-5">{children}</div>
-        {footer && <div className="px-5 sm:px-6 py-3.5 border-t border-line bg-canvas sm:rounded-b-2xl flex flex-wrap items-center justify-end gap-2">{footer}</div>}
+        <div className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-6 py-5">{children}</div>
+        {footer && <div className="px-5 sm:px-6 pt-3.5 pb-[max(0.875rem,env(safe-area-inset-bottom))] border-t border-line bg-canvas sm:rounded-b-2xl flex flex-wrap items-center justify-end gap-2">{footer}</div>}
       </div>
     </div>
   );
@@ -252,7 +252,7 @@ export function Tabs({ tabs, value, onChange }) {
 
 export const PageHeader = ({ title, subtitle, actions }) => (
   <div className="flex flex-wrap items-end justify-between gap-3 mb-5">
-    <div><h1 className="text-2xl font-bold text-ink">{title}</h1>{subtitle && <p className="text-sm text-slate mt-1">{subtitle}</p>}</div>
+    <div className="min-w-0"><h1 className="text-xl sm:text-2xl font-bold text-ink [overflow-wrap:anywhere]">{title}</h1>{subtitle && <p className="text-sm text-slate mt-1">{subtitle}</p>}</div>
     {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
   </div>
 );

@@ -46,8 +46,8 @@ const SplitCard = memo(function SplitCard({ split, loading }) {
             {total > 0 && <><div style={{ width: `${pct(cod)}%`, background: COD }} /><div style={{ width: `${pct(online)}%`, background: ONLINE }} /></>}
           </div>
           <dl className="mt-3 space-y-1.5 text-sm">
-            <div className="flex items-center justify-between"><dt className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: COD }} />Cash on delivery</dt><dd className="font-semibold">{bdt(cod)} <span className="font-normal text-slate">({pct(cod)}%) · {num(split?.cod?.orders)} orders</span></dd></div>
-            <div className="flex items-center justify-between"><dt className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: ONLINE }} />Online payment</dt><dd className="font-semibold">{bdt(online)} <span className="font-normal text-slate">({pct(online)}%) · {num(split?.online?.orders)} orders</span></dd></div>
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-0.5"><dt className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: COD }} />Cash on delivery</dt><dd className="font-semibold ml-auto text-right">{bdt(cod)} <span className="font-normal text-slate">({pct(cod)}%) · {num(split?.cod?.orders)} orders</span></dd></div>
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-0.5"><dt className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: ONLINE }} />Online payment</dt><dd className="font-semibold ml-auto text-right">{bdt(online)} <span className="font-normal text-slate">({pct(online)}%) · {num(split?.online?.orders)} orders</span></dd></div>
           </dl>
         </>
       )}
@@ -77,7 +77,7 @@ const ChartTooltip = ({ active, payload, label, monthly }) => {
 const SalesChart = memo(function SalesChart({ rows, monthly }) {
   const data = useMemo(() => rows || [], [rows]);
   return (
-    <div className="h-72 px-2 pb-4 pt-3">
+    <div className="h-64 sm:h-72 px-2 pb-4 pt-3">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 8, right: 12, left: 0, bottom: 0 }} barCategoryGap="22%">
           <CartesianGrid vertical={false} stroke="#e7eee9" />
@@ -109,13 +109,13 @@ export default function Dashboard() {
     <>
       <PageHeader title="Dashboard" subtitle="Live sales performance. Updates every 30 seconds."
         actions={<>
-          <Select aria-label="Report period" value={range} onChange={(e) => setRange(e.target.value)} className="w-40">{RANGES.map((r) => <option key={r.v} value={r.v}>{r.l}</option>)}</Select>
+          <Select aria-label="Report period" value={range} onChange={(e) => setRange(e.target.value)} className="w-40 max-w-full">{RANGES.map((r) => <option key={r.v} value={r.v}>{r.l}</option>)}</Select>
           <Button variant="outline" onClick={() => { overview.refetch(); sales.refetch(); recent.refetch(); }} loading={overview.isFetching && !loading}><RefreshCw size={15} />Refresh</Button>
         </>} />
 
       {overview.isError && !o ? <Card><ErrorState error={overview.error} onRetry={overview.refetch} /></Card> : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <StatCard icon={Banknote} label="Total revenue" value={bdt(o?.totalRevenue)} change={o?.revenueChange} sub={`Avg order ${bdt(o?.avgOrderValue)}`} loading={loading} />
             <StatCard icon={ShoppingBag} label="Total orders" value={num(o?.totalOrders)} change={o?.ordersChange} sub={`${num(o?.itemsSold)} items sold`} loading={loading} tone="bg-blue-50 text-blue-700" />
             <StatCard icon={CalendarDays} label="Today's sales" value={bdt(o?.today.sales)} change={o?.today.change} sub={`${num(o?.today.orders)} orders today`} loading={loading} tone="bg-amber-50 text-amber-700" />
@@ -130,10 +130,10 @@ export default function Dashboard() {
             {sales.isLoading ? <Skeleton className="h-72 m-5" /> : sales.isError ? <ErrorState error={sales.error} onRetry={sales.refetch} /> : <SalesChart rows={sales.data?.data} monthly={view === "monthly"} />}
           </Card>
 
-          <div className="grid gap-4 mt-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3">
             <Card className="lg:col-span-2">
               <CardHeader title="Order pipeline" subtitle="Orders in the selected period" />
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 p-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3 p-4 sm:p-5">
                 {ORDER_STATUS.map((s) => (
                   <Link key={s.key} to={`/orders?status=${s.key}`} className="rounded-lg border border-line p-3">
                     <p className="text-xs text-slate">{s.label}</p>
@@ -141,7 +141,7 @@ export default function Dashboard() {
                   </Link>
                 ))}
               </div>
-              <div className="grid sm:grid-cols-3 gap-3 px-5 pb-5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3 gap-3 px-4 sm:px-5 pb-5">
                 <Alert icon={AlertTriangle} tone="amber" to="/products?stock=low" value={o?.inventory.lowStock} label={`Low stock (≤ ${o?.inventory.lowStockThreshold ?? 5})`} />
                 <Alert icon={PackageX} tone="red" to="/products?stock=out" value={o?.inventory.outOfStock} label="Out of stock" />
                 <Alert icon={Truck} tone="blue" to="/orders?status=processing" value={sc?.Processing} label="Ready to ship" />
@@ -151,12 +151,12 @@ export default function Dashboard() {
             <Card>
               <CardHeader title="Top products" subtitle="By revenue" />
               {top.isLoading ? <Skeleton className="h-40 m-5" /> : !top.data?.data?.length ? <EmptyState title="No sales yet" text="Top sellers appear here after the first orders." /> : (
-                <ol className="p-5 space-y-3">
+                <ol className="p-4 sm:p-5 space-y-3">
                   {top.data.data.slice(0, 6).map((p, i) => (
                     <li key={p._id} className="flex items-center gap-3">
-                      <span className="w-5 text-sm font-semibold text-slate">{i + 1}</span>
+                      <span className="w-5 shrink-0 text-sm font-semibold text-slate">{i + 1}</span>
                       <div className="min-w-0 flex-1"><p className="text-sm font-medium truncate">{p.title}</p><p className="text-xs text-slate">{num(p.quantity)} sold</p></div>
-                      <span className="text-sm font-semibold">{compactBdt(p.revenue)}</span>
+                      <span className="text-sm font-semibold shrink-0">{compactBdt(p.revenue)}</span>
                     </li>
                   ))}
                 </ol>
@@ -168,7 +168,7 @@ export default function Dashboard() {
             <CardHeader title="Recent orders" action={<Link to="/orders" className="text-sm font-medium text-leaf-dark">View all</Link>} />
             {recent.isLoading ? <Skeleton className="h-32 m-5" /> : !recent.data?.data?.length ? <EmptyState title="No orders yet" /> : (
               <div className="overflow-x-auto mt-3">
-                <table className="w-full text-sm"><tbody className="divide-y divide-line">
+                <table className="w-full text-sm min-w-[40rem] [&_td]:whitespace-nowrap"><tbody className="divide-y divide-line">
                   {recent.data.data.map((r) => (
                     <tr key={r._id}>
                       <td className="px-5 py-3 font-semibold">{r.orderNumber || r._id.slice(-6)}</td>

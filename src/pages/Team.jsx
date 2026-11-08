@@ -24,7 +24,7 @@ function AddModal({ onClose }) {
     <Modal open onClose={onClose} size="md" title="Add team member" subtitle="They can sign in to this dashboard right away."
       footer={<><Button variant="secondary" onClick={onClose}>Cancel</Button><Button type="submit" form="team-form" loading={m.isPending}>Add member</Button></>}>
       <form id="team-form" onSubmit={submit} className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="First name">{(i) => <Input id={i} value={f.firstName} onChange={(e) => set("firstName", e.target.value)} />}</Field>
           <Field label="Last name">{(i) => <Input id={i} value={f.lastName} onChange={(e) => set("lastName", e.target.value)} />}</Field>
         </div>
@@ -45,12 +45,12 @@ export default function Team() {
   return (
     <>
       <PageHeader title="Team & roles" subtitle="Control who can sign in to this dashboard and what they can do." actions={<Button onClick={() => setAdding(true)}><Plus size={16} /> Add member</Button>} />
-      <div className="grid gap-3 sm:grid-cols-3 mb-5">{ROLES.map((r) => <Card key={r.value} className="p-4"><Badge tone={roleTone[r.value]}>{r.label}</Badge><p className="text-sm text-slate mt-2">{r.desc}</p></Card>)}</div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 mb-5">{ROLES.map((r) => <Card key={r.value} className="p-4"><Badge tone={roleTone[r.value]}>{r.label}</Badge><p className="text-sm text-slate mt-2">{r.desc}</p></Card>)}</div>
       <Card>
         {q.isLoading ? <TableSkeleton rows={4} cols={5} />
           : q.isError && !q.data ? <ErrorState error={q.error} onRetry={q.refetch} />
           : rows.length === 0 ? <EmptyState title="No team members" /> : (
-            <div className="overflow-x-auto"><table className="w-full text-sm">
+            <div className="overflow-x-auto"><table className="w-full text-sm min-w-[40rem]">
               <thead><tr><Th>Member</Th><Th>Role</Th><Th>Added</Th><Th>Access</Th></tr></thead>
               <tbody className="divide-y divide-line">{rows.map((u) => { const me = u._id === user?._id || u._id === user?.id; return (
                 <tr key={u._id}>

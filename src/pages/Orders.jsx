@@ -126,10 +126,10 @@ export default function Orders() {
         </div>
 
         {selected.size > 0 && (
-          <div className="sticky top-0 z-10 flex flex-wrap items-center gap-2 px-4 py-2.5 bg-forest text-white text-sm" role="region" aria-label="Bulk actions">
+          <div className="sticky top-14 lg:top-0 z-10 flex flex-wrap items-center gap-2 px-4 py-2.5 bg-forest text-white text-sm" role="region" aria-label="Bulk actions">
             <b>{selected.size} selected</b>
             {can("orders:bulk") && <>
-              <Select aria-label="Bulk status" value={bulkNext} onChange={(e) => setBulkStatus(e.target.value)} className="h-9 w-44 text-ink"><option value="">Change status to...</option>{ORDER_STATUS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}</Select>
+              <Select aria-label="Bulk status" value={bulkNext} onChange={(e) => setBulkStatus(e.target.value)} className="h-9 w-44 max-w-full text-ink"><option value="">Change status to...</option>{ORDER_STATUS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}</Select>
               <Button size="sm" disabled={!bulkStatus} loading={bulkStatusMut.isPending} onClick={() => bulkStatusMut.mutate()}>Apply</Button></>}
             {can("orders:courier") && <>
               <Select aria-label="Bulk courier" value={bulkProvider} onChange={(e) => setBulkProvider(e.target.value)} className="h-9 w-36 text-ink">{PROVIDERS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}</Select>
@@ -144,7 +144,7 @@ export default function Orders() {
           : rows.length === 0 ? <EmptyState title="No orders found" text={dq || method !== "all" || zone !== "all" || from || to ? "Try clearing the filters." : "New orders will appear here automatically."} />
           : (
             <div className={`overflow-x-auto transition-opacity ${list.isPlaceholderData ? "opacity-60" : ""}`}>
-              <table className="w-full text-sm">
+              <table className="w-full text-sm min-w-[64rem]">
                 <thead><tr><Th className="w-10"><Checkbox checked={allOnPage} onChange={togglePage} aria-label="Select all on this page" /></Th><Th>Order</Th><Th>Customer</Th><Th>Items</Th><Th className="text-right">Total</Th><Th>Payment</Th><Th>Status</Th><Th>Courier</Th><Th className="text-right">Actions</Th></tr></thead>
                 <tbody className="divide-y divide-line">
                   {rows.map((o) => <Row key={o._id} o={o} selected={selected.has(o._id)} onSelect={toggle} onView={setViewId} onStatus={onStatus} onInvoice={(id) => invoice([id])} canUpdate={can("orders:update")} busy={statusMut.isPending && statusMut.variables?.o._id === o._id} />)}

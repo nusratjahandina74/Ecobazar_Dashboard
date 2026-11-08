@@ -18,7 +18,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
+    <div className="min-h-dvh grid grid-cols-1 lg:grid-cols-2">
       <div className="hidden lg:flex flex-col justify-between bg-forest text-white p-12">
         <div className="flex items-center gap-3"><img src="/favicon.svg" alt="" className="w-10 h-10 rounded-xl" /><span className="text-xl font-bold">EcoBazaar</span></div>
         <div>
@@ -29,6 +29,7 @@ export default function Login() {
       </div>
       <div className="flex items-center justify-center px-5 py-12 bg-white">
         <form onSubmit={submit} className="w-full max-w-sm space-y-5" noValidate>
+          <div className="lg:hidden flex items-center gap-3 mb-2"><img src="/favicon.svg" alt="" className="w-10 h-10 rounded-xl" /><span className="text-xl font-bold">EcoBazaar <span className="font-medium text-slate">Admin</span></span></div>
           <div><h2 className="text-2xl font-bold">Sign in</h2><p className="text-sm text-slate mt-1">Use your admin, manager or staff account.</p></div>
           <Field label="Email">{(id) => (
             <div className="relative"><Mail size={16} className="absolute left-3 top-3 text-slate/60" /><Input id={id} type="email" autoComplete="username" className="pl-9" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" /></div>

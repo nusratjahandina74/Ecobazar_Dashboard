@@ -11,7 +11,7 @@ import { Bold, Italic, Underline as UnderlineIcon, Strikethrough, Heading2, Head
 function Btn({ label, active, onClick, disabled, children }) {
   return (
     <button type="button" aria-label={label} title={label} aria-pressed={!!active} disabled={disabled} onMouseDown={(e) => e.preventDefault()} onClick={onClick}
-      className={`inline-flex items-center justify-center w-8 h-8 rounded-md disabled:opacity-30 ${active ? "bg-leaf text-white" : "text-slate"}`}>{children}</button>
+      className={`inline-flex items-center justify-center w-8 h-8 pointer-coarse:w-9 pointer-coarse:h-9 rounded-md disabled:opacity-30 ${active ? "bg-leaf text-white" : "text-slate"}`}>{children}</button>
   );
 }
 const Sep = () => <span className="w-px h-5 mx-1 bg-line" aria-hidden="true" />;

@@ -27,7 +27,7 @@ function useSection(section, initial) {
   return { form, set, save, dirty };
 }
 const SaveBar = ({ dirty, loading, disabled }) => (
-  <div className="flex items-center gap-3 px-5 py-4 border-t border-line bg-canvas rounded-b-xl">
+  <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 sm:px-5 py-4 border-t border-line bg-canvas rounded-b-xl">
     <Button type="submit" loading={loading} disabled={!dirty || disabled}>Save changes</Button>
     {!disabled && <span className="text-xs text-slate">{dirty ? "You have unsaved changes." : "All changes saved."}</span>}
     {disabled && <span className="text-xs text-slate">Only admins can change settings.</span>}
@@ -45,16 +45,16 @@ function StoreForm({ s, ro }) {
   return (
     <form onSubmit={(e) => { e.preventDefault(); save.mutate(form); }}>
       <CardHeader title="Store information" subtitle="Shown in the shop header, footer, contact page and invoices." />
-      <div className="grid gap-4 p-5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
         <Field label="Store name">{(i) => <Input id={i} disabled={ro} value={form.name || ""} onChange={(e) => set("name", e.target.value)} />}</Field>
         <Field label="Tagline">{(i) => <Input id={i} disabled={ro} value={form.tagline || ""} onChange={(e) => set("tagline", e.target.value)} />}</Field>
         <Field label="Contact email">{(i) => <Input id={i} type="email" disabled={ro} value={form.email || ""} onChange={(e) => set("email", e.target.value)} />}</Field>
         <Field label="Contact phone">{(i) => <Input id={i} disabled={ro} value={form.phone || ""} onChange={(e) => set("phone", e.target.value)} />}</Field>
         <Field label="Address" className="sm:col-span-2">{(i) => <Input id={i} disabled={ro} value={form.address || ""} onChange={(e) => set("address", e.target.value)} />}</Field>
         <Field label="Logo" hint="Square image works best. Replaces the default logo in the shop navbar." className="sm:col-span-2">{(i) => (
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <img src={form.logo ? assetUrl(form.logo) : "/favicon.svg"} alt="" className="w-14 h-14 rounded-xl border border-line object-contain bg-white" />
-            <input id={i} type="file" accept="image/png,image/jpeg,image/webp" disabled={ro || uploading} onChange={(e) => upload(e.target.files?.[0])} className="text-sm" />
+            <input id={i} type="file" accept="image/png,image/jpeg,image/webp" disabled={ro || uploading} onChange={(e) => upload(e.target.files?.[0])} className="text-sm min-w-0 max-w-full" />
             {form.logo && !ro && <Button type="button" variant="ghost" size="sm" onClick={() => set("logo", "")}>Use default</Button>}
           </div>)}</Field>
         <Field label="Facebook page">{(i) => <Input id={i} disabled={ro} value={form.facebook || ""} onChange={(e) => set("facebook", e.target.value)} placeholder="https://facebook.com/..." />}</Field>
@@ -82,7 +82,7 @@ function DeliveryForm({ s, ro }) {
   return (
     <form onSubmit={submit}>
       <CardHeader title="Delivery & payment" subtitle="Customers pick Inside Dhaka or Outside Dhaka at checkout. The server charges exactly these amounts." />
-      <div className="grid gap-4 p-5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
         <Field label="Inside Dhaka charge (৳)">{(i) => <Input id={i} type="number" min="0" disabled={ro} value={form.insideDhakaCharge ?? ""} onChange={(e) => set("insideDhakaCharge", e.target.value)} />}</Field>
         <Field label="Outside Dhaka charge (৳)">{(i) => <Input id={i} type="number" min="0" disabled={ro} value={form.outsideDhakaCharge ?? ""} onChange={(e) => set("outsideDhakaCharge", e.target.value)} />}</Field>
         <div className="sm:col-span-2 rounded-lg border border-line p-4 space-y-3">
@@ -91,9 +91,9 @@ function DeliveryForm({ s, ro }) {
         </div>
         <div className="sm:col-span-2 rounded-lg border border-line p-4 space-y-3">
           <div className="flex items-center justify-between gap-4"><div><p className="text-sm font-medium">Free delivery campaign</p><p className="text-xs text-slate">Everything ships free between two dates (Bangladesh time).</p></div><Switch label="Free delivery campaign" checked={!!form.freeAllEnabled} disabled={ro} onChange={(v) => set("freeAllEnabled", v)} /></div>
-          {form.freeAllEnabled && <div className="grid gap-3 sm:grid-cols-2"><Field label="Starts">{(i) => <Input id={i} type="datetime-local" disabled={ro} value={form.freeAllStartDate || ""} onChange={(e) => set("freeAllStartDate", e.target.value)} />}</Field><Field label="Ends">{(i) => <Input id={i} type="datetime-local" disabled={ro} value={form.freeAllEndDate || ""} onChange={(e) => set("freeAllEndDate", e.target.value)} />}</Field></div>}
+          {form.freeAllEnabled && <div className="grid grid-cols-1 gap-3 sm:grid-cols-2"><Field label="Starts">{(i) => <Input id={i} type="datetime-local" disabled={ro} value={form.freeAllStartDate || ""} onChange={(e) => set("freeAllStartDate", e.target.value)} />}</Field><Field label="Ends">{(i) => <Input id={i} type="datetime-local" disabled={ro} value={form.freeAllEndDate || ""} onChange={(e) => set("freeAllEndDate", e.target.value)} />}</Field></div>}
         </div>
-        <div className="sm:col-span-2 grid gap-3 sm:grid-cols-2">
+        <div className="sm:col-span-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="flex items-center justify-between rounded-lg border border-line p-4"><div><p className="text-sm font-medium">Cash on delivery</p><p className="text-xs text-slate">Offer COD at checkout</p></div><Switch label="Cash on delivery" checked={form.codEnabled !== false} disabled={ro} onChange={(v) => set("codEnabled", v)} /></div>
           <div className="flex items-center justify-between rounded-lg border border-line p-4"><div><p className="text-sm font-medium">Online payment</p><p className="text-xs text-slate">Offer aamarPay at checkout</p></div><Switch label="Online payment" checked={form.onlineEnabled !== false} disabled={ro} onChange={(v) => set("onlineEnabled", v)} /></div>
         </div>
@@ -200,11 +200,11 @@ function HomeForm({ s, ro }) {
     <form onSubmit={submit}>
       <CardHeader title="Home page" subtitle="Choose what customers see on the shop home page." />
       <div className="p-5 space-y-6">
-        <div><p className="text-sm font-medium mb-2">Sections</p><div className="grid gap-2 sm:grid-cols-2">{SECTIONS_HOME.map(([k, l]) => <div key={k} className="flex items-center justify-between rounded-lg border border-line px-4 py-2.5"><span className="text-sm">{l}</span><Switch label={l} checked={form[k] !== false} disabled={ro} onChange={(v) => set(k, v)} /></div>)}</div></div>
+        <div><p className="text-sm font-medium mb-2">Sections</p><div className="grid grid-cols-1 gap-2 sm:grid-cols-2">{SECTIONS_HOME.map(([k, l]) => <div key={k} className="flex items-center justify-between rounded-lg border border-line px-4 py-2.5"><span className="text-sm">{l}</span><Switch label={l} checked={form[k] !== false} disabled={ro} onChange={(v) => set(k, v)} /></div>)}</div></div>
         <div className="rounded-lg border border-line p-4 space-y-4">
-          <div className="flex items-center justify-between gap-4"><div><p className="text-sm font-medium">Flash sale</p><p className="text-xs text-slate">A highlighted section with a live countdown. Hides itself when time is up.</p></div><Switch label="Flash sale" checked={!!form.flash.enabled} disabled={ro} onChange={(v) => setFlash("enabled", v)} /></div>
+          <div className="flex items-center justify-between gap-4"><div className="min-w-0"><p className="text-sm font-medium">Flash sale</p><p className="text-xs text-slate">A highlighted section with a live countdown. Hides itself when time is up.</p></div><Switch label="Flash sale" checked={!!form.flash.enabled} disabled={ro} onChange={(v) => setFlash("enabled", v)} /></div>
           {form.flash.enabled && (<>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field label="Title">{(i) => <Input id={i} maxLength={60} disabled={ro} value={form.flash.title || ""} onChange={(e) => setFlash("title", e.target.value)} />}</Field>
               <Field label="Ends at (Bangladesh time)">{(i) => <Input id={i} type="datetime-local" disabled={ro} value={form.flash.endsAt || ""} onChange={(e) => setFlash("endsAt", e.target.value)} />}</Field>
               <Field label="Subtitle" className="sm:col-span-2">{(i) => <Input id={i} maxLength={120} disabled={ro} value={form.flash.subtitle || ""} onChange={(e) => setFlash("subtitle", e.target.value)} placeholder="Up to 30% off fresh fruits" />}</Field>
@@ -214,7 +214,7 @@ function HomeForm({ s, ro }) {
         </div>
         <div><p className="text-sm font-medium mb-2">Highlights under the banner</p>
           <div className="space-y-2">{form.badges.map((b, i) => (
-            <div key={i} className="grid gap-2 sm:grid-cols-[9rem_1fr_1fr_auto]">
+            <div key={i} className="grid grid-cols-1 gap-2 md:grid-cols-[9rem_minmax(0,1fr)_minmax(0,1fr)_auto]">
               <Select aria-label="Icon" disabled={ro} value={b.icon} onChange={(e) => setBadge(i, "icon", e.target.value)}>{ICONS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</Select>
               <Input aria-label="Highlight title" maxLength={40} disabled={ro} value={b.title} onChange={(e) => setBadge(i, "title", e.target.value)} placeholder="Title" />
               <Input aria-label="Highlight text" maxLength={80} disabled={ro} value={b.text} onChange={(e) => setBadge(i, "text", e.target.value)} placeholder="Short text" />

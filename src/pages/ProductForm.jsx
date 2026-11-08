@@ -84,10 +84,10 @@ export default function ProductForm() {
 
   return (
     <form onSubmit={submit} noValidate>
-      <div className="sticky top-0 lg:top-0 z-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 mb-5 bg-canvas/95 backdrop-blur border-b border-line flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <Link to="/products" aria-label="Back to products" className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-line bg-white"><ArrowLeft size={18} /></Link>
-          <div><h1 className="text-xl font-bold">{editing ? "Edit product" : "Add product"}</h1><p className="text-xs text-slate">{editing ? f.title : "Fill in the details and save"}</p></div>
+      <div className="sticky top-14 lg:top-0 z-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 mb-5 bg-canvas/95 backdrop-blur border-b border-line flex flex-wrap items-center justify-between gap-3">
+        <div className="flex min-w-0 max-w-full items-center gap-3">
+          <Link to="/products" aria-label="Back to products" className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-line bg-white shrink-0"><ArrowLeft size={18} /></Link>
+          <div className="min-w-0"><h1 className="text-xl font-bold">{editing ? "Edit product" : "Add product"}</h1><p className="text-xs text-slate truncate">{editing ? f.title : "Fill in the details and save"}</p></div>
         </div>
         <div className="flex gap-2"><Link to="/products"><Button type="button" variant="outline">Cancel</Button></Link><Button type="submit" loading={save.isPending}><Save size={16} />{editing ? "Save changes" : "Create product"}</Button></div>
       </div>
@@ -98,11 +98,11 @@ export default function ProductForm() {
           <div className="p-5"><ImageUploader items={images} onChange={onImages} /></div>
         </Card>
 
-        <div className="grid gap-5 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
           <div className="space-y-5 lg:col-span-2">
             <Card>
               <CardHeader title="Basic information" />
-              <div className="grid gap-4 p-5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
                 <Field label="Product name *" error={errors.title} className="sm:col-span-2">{(i) => <Input id={i} value={f.title} onChange={set("title")} maxLength={200} aria-invalid={!!errors.title} />}</Field>
                 <Field label="Short description" hint="One or two lines shown near the price." className="sm:col-span-2">{(i) => <Textarea id={i} rows={2} maxLength={500} value={f.shortDescription} onChange={set("shortDescription")} />}</Field>
                 <Field label="Category *" error={errors.category}>{(i) => <><Input id={i} list="cat-list" value={f.category} onChange={set("category")} placeholder="Choose or type new" aria-invalid={!!errors.category} /><datalist id="cat-list">{cats.map((c) => <option key={c.name} value={c.name} />)}</datalist></>}</Field>
@@ -129,7 +129,7 @@ export default function ProductForm() {
                 {variants.length === 0 && <p className="text-sm text-slate">No variants. The product is sold as a single item using the price and stock on the right.</p>}
                 {variants.map((v, i) => (
                   <div key={v.key} className="rounded-lg border border-line p-3">
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-6">
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 2xl:grid-cols-6">
                       <Field label="Size" className="sm:col-span-1">{(id) => <Input id={id} value={v.size} onChange={(e) => setVar(v.key, "size", e.target.value)} placeholder="M" />}</Field>
                       <Field label="Color" className="sm:col-span-1">{(id) => <Input id={id} value={v.color} onChange={(e) => setVar(v.key, "color", e.target.value)} placeholder="Red" />}</Field>
                       <Field label="Price ৳" hint="Blank = main price" className="sm:col-span-1">{(id) => <Input id={id} type="number" min="0" value={v.price} onChange={(e) => setVar(v.key, "price", e.target.value)} />}</Field>
@@ -156,7 +156,7 @@ export default function ProductForm() {
             </Card>
             <Card>
               <CardHeader title="Price & stock" />
-              <div className="grid gap-4 p-5">
+              <div className="grid grid-cols-1 gap-4 p-5">
                 <Field label="Price (৳) *" error={errors.price}>{(i) => <Input id={i} type="number" min="0" step="any" value={f.price} onChange={set("price")} aria-invalid={!!errors.price} />}</Field>
                 <Field label="Sale price (৳)" hint="Leave empty for no discount" error={errors.discountPrice}>{(i) => <Input id={i} type="number" min="0" step="any" value={f.discountPrice} onChange={set("discountPrice")} />}</Field>
                 <Field label="Stock quantity" error={errors.stock} hint={hasVariants ? "Calculated from the variants" : undefined}>{(i) => <Input id={i} type="number" min="0" disabled={hasVariants} value={hasVariants ? variants.filter((v) => v.isActive).reduce((s, v) => s + (Number(v.stock) || 0), 0) : f.stock} onChange={set("stock")} />}</Field>

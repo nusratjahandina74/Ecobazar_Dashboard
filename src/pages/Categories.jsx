@@ -22,9 +22,9 @@ function CategoryModal({ cat, onClose }) {
       footer={<><Button variant="secondary" onClick={onClose}>Cancel</Button><Button type="submit" form="cat-form" loading={save.isPending}>{cat ? "Save changes" : "Add category"}</Button></>}>
       <form id="cat-form" onSubmit={submit} className="space-y-4">
         <Field label="Name *">{(i) => <Input id={i} maxLength={80} value={f.name} onChange={(e) => set("name", e.target.value)} />}</Field>
-        <Field label="Image" hint="Square image, shown on the home page tile.">{(i) => (<div className="flex items-center gap-4">{preview ? <img src={preview} alt="" className="w-16 h-16 rounded-xl object-cover border border-line" /> : <div className="w-16 h-16 rounded-xl bg-canvas border border-dashed border-line" />}<input id={i} type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm" /></div>)}</Field>
+        <Field label="Image" hint="Square image, shown on the home page tile.">{(i) => (<div className="flex flex-wrap items-center gap-x-4 gap-y-2">{preview ? <img src={preview} alt="" className="w-16 h-16 rounded-xl object-cover border border-line" /> : <div className="w-16 h-16 rounded-xl bg-canvas border border-dashed border-line" />}<input id={i} type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm min-w-0 max-w-full" /></div>)}</Field>
         <Field label="Short description">{(i) => <Textarea id={i} rows={2} maxLength={300} value={f.description} onChange={(e) => set("description", e.target.value)} />}</Field>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="Position" hint="Lower numbers show first">{(i) => <Input id={i} type="number" value={f.order} onChange={(e) => set("order", e.target.value)} />}</Field>
           <div className="space-y-3 pt-1">
             <div className="flex items-center gap-3"><Switch label="Visible in shop" checked={f.isActive} onChange={(v) => set("isActive", v)} /><span className="text-sm">Visible in shop</span></div>
@@ -56,7 +56,7 @@ export default function Categories() {
       {q.isLoading ? <ListSkeleton rows={4} /> : q.isError ? <ErrorState error={q.error} onRetry={q.refetch} /> : rows.length === 0 ? (
         <Card><EmptyState title="No categories yet" text="Add your first category, e.g. Fruits or Electronics." action={<Button onClick={() => setEdit({})}>Add category</Button>} /></Card>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {rows.map((c) => (
             <Card key={c._id} className="p-4 flex items-center gap-4">
               {c.image ? <img src={assetUrl(c.image)} alt="" loading="lazy" className="w-16 h-16 rounded-xl object-cover border border-line" /> : <div className="w-16 h-16 rounded-xl bg-canvas border border-dashed border-line" />}

@@ -17,7 +17,7 @@ export default function Activity() {
         {q.isLoading ? <TableSkeleton rows={8} cols={5} />
           : q.isError && !q.data ? <ErrorState error={q.error} onRetry={q.refetch} />
           : rows.length === 0 ? <EmptyState title="No activity recorded yet" /> : (
-            <div className="overflow-x-auto"><table className="w-full text-sm">
+            <div className="overflow-x-auto"><table className="w-full text-sm min-w-[44rem]">
               <thead><tr><Th>When</Th><Th>Who</Th><Th>What happened</Th><Th>Type</Th></tr></thead>
               <tbody className="divide-y divide-line">{rows.map((a) => (
                 <tr key={a._id}>

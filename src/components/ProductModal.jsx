@@ -35,7 +35,7 @@ export default function ProductModal({ productId, onClose }) {
       subtitle={p && <span className="flex flex-wrap items-center gap-2">SKU {p.sku}<ProductStatusBadge status={p.status} /><span>Updated {dateTime(p.updatedAt)}</span></span>}
       footer={p && writable && <Link to={`/products/${p._id}/edit`}><Button><Pencil size={15} />Edit full product</Button></Link>}>
       {isLoading ? <div className="flex justify-center py-16"><Spinner /></div> : error ? <ErrorState error={error} onRetry={refetch} /> : p && (
-        <div className="grid gap-6 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <div className="aspect-square overflow-hidden rounded-xl bg-mint border border-line">
               {p.images?.[img] ? <img src={assetUrl(p.images[img].url)} alt={p.title} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-sm text-slate">No image</div>}
@@ -46,7 +46,7 @@ export default function ProductModal({ productId, onClose }) {
           </div>
 
           <div className="lg:col-span-3 space-y-5">
-            <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+            <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm [&_dd]:[overflow-wrap:anywhere]">
               <div><dt className="text-slate">Category</dt><dd className="font-medium">{p.category}{p.subCategory && ` / ${p.subCategory}`}</dd></div>
               <div><dt className="text-slate">Brand</dt><dd className="font-medium">{p.brand || "-"}</dd></div>
               <div><dt className="text-slate">Sold</dt><dd className="font-medium">{p.soldCount || 0}</dd></div>
@@ -59,7 +59,7 @@ export default function ProductModal({ productId, onClose }) {
                 <Field label="Status" hint="Only Active products are visible in the shop.">{(id) => (
                   <Select id={id} value={p.status} disabled={quick.isPending} onChange={(e) => quick.mutate({ status: e.target.value })}>{PRODUCT_STATUS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}</Select>
                 )}</Field>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 min-[420px]:grid-cols-3 gap-3">
                   <Field label="Price (৳)">{(id) => <Input id={id} type="number" min="0" value={price ?? p.price} onChange={(e) => setPrice(e.target.value)} />}</Field>
                   <Field label="Sale price (৳)">{(id) => <Input id={id} type="number" min="0" value={disc ?? (p.discountPrice || "")} onChange={(e) => setDisc(e.target.value)} placeholder="None" />}</Field>
                   <Field label="Stock">{(id) => <Input id={id} type="number" min="0" disabled={hasVariants} value={stock ?? p.stock} onChange={(e) => setStock(e.target.value)} />}</Field>

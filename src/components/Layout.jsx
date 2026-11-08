@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router";
 import { useIsFetching, useQuery } from "@tanstack/react-query";
 import { LayoutDashboard, ShoppingBag, Package, Users, Image, MessageSquare, Settings, ShieldCheck, History, LogOut, Menu, X, ExternalLink, Tags, TicketPercent, Star, FileText, Mail } from "lucide-react";
@@ -35,7 +35,7 @@ function Sidebar({ onNavigate, unread, pendingReviews }) {
         <img src="/favicon.svg" alt="" className="w-8 h-8 rounded-lg" />
         <div className="leading-tight"><p className="font-bold">EcoBazaar</p><p className="text-[11px] text-white/60">Admin dashboard</p></div>
       </div>
-      <nav className="flex-1 px-3 py-4 overflow-y-auto" aria-label="Main">
+      <nav className="flex-1 px-3 py-4 overflow-y-auto overscroll-contain" aria-label="Main">
         {(() => {
           const out = []; let pending = null;
           NAV.forEach((n) => {
@@ -46,10 +46,10 @@ function Sidebar({ onNavigate, unread, pendingReviews }) {
             const count = badge === "reviews" ? pendingReviews : badge ? unread : 0;
             out.push(
               <NavLink key={to} to={to} end={end} onClick={onNavigate}
-                className={({ isActive }) => `group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive ? "bg-white/15 text-white" : "text-white/70 hover:bg-white/8 hover:text-white"}`}>
+                className={({ isActive }) => `group relative flex items-center gap-3 rounded-lg px-3 py-3 lg:py-2.5 text-sm font-medium transition-colors ${isActive ? "bg-white/15 text-white" : "text-white/70 hover:bg-white/8 hover:text-white"}`}>
                 {({ isActive }) => (<>
                   {isActive && <span className="absolute left-0 w-1 h-5 -translate-y-1/2 rounded-r-full top-1/2 bg-leaf-soft" aria-hidden="true" />}
-                  <Icon size={18} /><span className="flex-1">{label}</span>
+                  <Icon size={18} /><span className="flex-1 min-w-0 truncate">{label}</span>
                   {count > 0 && <span className="rounded-full bg-leaf px-2 py-0.5 text-[11px] font-bold">{count}</span>}
                 </>)}
               </NavLink>
@@ -77,23 +77,34 @@ export default function Layout() {
   const { data } = useQuery({ queryKey: ["messages-unread"], queryFn: () => api.messages({ limit: 1, unread: "true" }), enabled: can("messages:read"), refetchInterval: 60000, staleTime: 30000 });
   const { data: rv } = useQuery({ queryKey: ["reviews-pending"], queryFn: () => api.reviews({ limit: 1, status: "pending" }), enabled: can("reviews:read"), refetchInterval: 60000, staleTime: 30000 });
   const fetching = useIsFetching() > 0;
+
+  // drawer: Escape closes it, the page behind it does not scroll, and it closes if the screen grows to desktop size
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onMq = () => { if (mq.matches) setOpen(false); };
+    document.addEventListener("keydown", onKey); mq.addEventListener("change", onMq);
+    const prev = document.body.style.overflow; document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", onKey); mq.removeEventListener("change", onMq); document.body.style.overflow = prev; };
+  }, [open]);
   const unread = data?.unread || 0; const pendingReviews = rv?.pending || 0;
 
   return (
-    <div className="min-h-screen lg:pl-64">
+    <div className="min-h-dvh lg:pl-64">
       <TopProgress active={fetching} />
       <aside className="hidden lg:block fixed inset-y-0 left-0 w-64 z-30"><Sidebar unread={unread} pendingReviews={pendingReviews} /></aside>
       {open && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
+        <div className="lg:hidden fixed inset-0 z-50 flex" role="dialog" aria-modal="true" aria-label="Menu">
           <div className="absolute inset-0 bg-forest/60" onClick={() => setOpen(false)} aria-hidden="true" />
-          <aside className="relative w-72 max-w-[85vw]"><Sidebar unread={unread} pendingReviews={pendingReviews} onNavigate={() => setOpen(false)} />
-            <button onClick={() => setOpen(false)} aria-label="Close menu" className="absolute top-4 right-3 text-white/80"><X size={20} /></button>
+          <aside className="relative w-72 max-w-[85vw] h-dvh"><Sidebar unread={unread} pendingReviews={pendingReviews} onNavigate={() => setOpen(false)} />
+            <button onClick={() => setOpen(false)} aria-label="Close menu" className="absolute top-3 right-2 flex items-center justify-center w-10 h-10 text-white/80"><X size={20} /></button>
           </aside>
         </div>
       )}
       <header className="lg:hidden sticky top-0 z-20 flex items-center gap-3 h-14 px-4 bg-white border-b border-line">
-        <button onClick={() => setOpen(true)} aria-label="Open menu" className="p-1.5 -ml-1.5"><Menu size={22} /></button>
-        <img src="/favicon.svg" alt="" className="w-7 h-7 rounded-md" /><span className="font-bold">EcoBazaar Admin</span>
+        <button onClick={() => setOpen(true)} aria-label="Open menu" className="flex items-center justify-center w-10 h-10 -ml-2 shrink-0"><Menu size={22} /></button>
+        <img src="/favicon.svg" alt="" className="w-7 h-7 rounded-md" /><span className="font-bold truncate">EcoBazaar Admin</span>
       </header>
       <main key={location.pathname.split("/")[1]} className="px-4 sm:px-6 lg:px-8 py-6 max-w-[1500px] w-full min-w-0 mx-auto"><Outlet /></main>
     </div>

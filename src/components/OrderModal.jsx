@@ -38,16 +38,16 @@ export default function OrderModal({ orderId, onClose }) {
       subtitle={o && <span className="flex flex-wrap items-center gap-2">{dateTime(o.createdAt)}<OrderStatusBadge status={o.orderStatus} /><MethodBadge method={o.paymentMethod} /><PaymentBadge status={o.paymentStatus} /></span>}
       footer={o && <Button variant="outline" onClick={() => printInvoices([o._id]).catch((e) => toast.error(e.message))}><Printer size={16} />Print invoice</Button>}>
       {isLoading ? <div className="flex justify-center py-16"><Spinner /></div> : error ? <ErrorState error={error} onRetry={refetch} /> : o && (
-        <div className="grid gap-6 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           <div className="lg:col-span-3 space-y-6">
             <section>
               <h3 className="text-sm font-semibold mb-2">Items</h3>
               <ul className="divide-y divide-line rounded-lg border border-line">
                 {o.products.map((p, i) => (
                   <li key={i} className="flex items-center gap-3 p-3">
-                    {p.image ? <img src={assetUrl(p.image)} alt="" className="w-12 h-12 rounded-md object-cover bg-mint" /> : <div className="w-12 h-12 rounded-md bg-mint" />}
+                    {p.image ? <img src={assetUrl(p.image)} alt="" className="w-12 h-12 rounded-md object-cover bg-mint shrink-0" /> : <div className="w-12 h-12 rounded-md bg-mint" />}
                     <div className="min-w-0 flex-1"><p className="text-sm font-medium truncate">{p.title}</p><p className="text-xs text-slate">{p.variantLabel ? `${p.variantLabel} · ` : ""}{bdt(p.price)} × {p.quantity}</p></div>
-                    <span className="text-sm font-semibold">{bdt(p.totalPrice)}</span>
+                    <span className="text-sm font-semibold shrink-0">{bdt(p.totalPrice)}</span>
                   </li>
                 ))}
               </ul>
@@ -64,8 +64,8 @@ export default function OrderModal({ orderId, onClose }) {
               <h3 className="text-sm font-semibold mb-2">Customer & delivery address</h3>
               <div className="rounded-lg border border-line p-4 text-sm space-y-1.5">
                 <p className="font-semibold">{a.name}</p>
-                <p className="flex items-center gap-2 text-slate"><Phone size={14} />{a.phone}</p>
-                <p className="flex items-center gap-2 text-slate"><Mail size={14} />{a.email}</p>
+                <p className="flex items-center gap-2 text-slate"><Phone size={14} className="shrink-0" />{a.phone}</p>
+                <p className="flex items-center gap-2 text-slate [overflow-wrap:anywhere]"><Mail size={14} className="shrink-0" />{a.email}</p>
                 <p className="flex items-start gap-2 text-slate"><MapPin size={14} className="mt-0.5 shrink-0" />{[a.address1, a.address2 !== "N/A" && a.address2, a.city, a.state !== "N/A" && a.state, a.postcode].filter(Boolean).join(", ")}</p>
                 <p className="text-xs text-slate pt-1">Account: {fullName(o.user)} {o.user?.email && `(${o.user.email})`}</p>
               </div>
@@ -113,14 +113,14 @@ export default function OrderModal({ orderId, onClose }) {
                   </div>
                 ) : ["Cancelled", "Delivered"].includes(o.orderStatus) ? <p className="text-sm text-slate">Not available for this order.</p> : (
                   <>
-                    <div className="flex gap-2">
-                      <Select aria-label="Courier" value={provider} onChange={(e) => setProvider(e.target.value)}>{PROVIDERS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}</Select>
-                      <Button loading={courier.isPending} onClick={() => courier.mutate()}>Send to courier</Button>
+                    <div className="flex flex-wrap gap-2">
+                      <Select aria-label="Courier" className="min-w-0 flex-1 basis-32" value={provider} onChange={(e) => setProvider(e.target.value)}>{PROVIDERS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}</Select>
+                      <Button className="shrink-0" loading={courier.isPending} onClick={() => courier.mutate()}>Send to courier</Button>
                     </div>
                     {o.courier?.error && <p role="alert" className="text-xs text-red-600">Last attempt failed: {o.courier.error}</p>}
-                    <div className="flex gap-2">
-                      <Input aria-label="Manual tracking code" placeholder="Or enter a tracking code" value={tracking} onChange={(e) => setTracking(e.target.value)} />
-                      <Button variant="outline" disabled={!tracking.trim()} loading={manual.isPending} onClick={() => manual.mutate()}>Save</Button>
+                    <div className="flex flex-wrap gap-2">
+                      <Input aria-label="Manual tracking code" className="min-w-0 flex-1 basis-40" placeholder="Or enter a tracking code" value={tracking} onChange={(e) => setTracking(e.target.value)} />
+                      <Button className="shrink-0" variant="outline" disabled={!tracking.trim()} loading={manual.isPending} onClick={() => manual.mutate()}>Save</Button>
                     </div>
                   </>
                 )}

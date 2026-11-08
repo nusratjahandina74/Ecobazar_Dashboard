@@ -30,7 +30,7 @@ function CouponModal({ coupon, onClose }) {
     <Modal open onClose={onClose} size="md" title={coupon ? `Edit ${coupon.code}` : "Create coupon"} subtitle="Customers enter the code at checkout."
       footer={<><Button variant="secondary" onClick={onClose}>Cancel</Button><Button type="submit" form="coupon-form" loading={save.isPending}>{coupon ? "Save changes" : "Create coupon"}</Button></>}>
       <form id="coupon-form" onSubmit={submit} className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="Code *" hint="Letters and numbers, e.g. EID20">{(i) => <Input id={i} value={f.code} maxLength={30} onChange={(e) => set("code", e.target.value.toUpperCase())} className="uppercase" />}</Field>
           <Field label="Discount type">{(i) => <Select id={i} value={f.type} onChange={(e) => set("type", e.target.value)}>{Object.entries(TYPES).map(([v, l]) => <option key={v} value={v}>{l}</option>)}</Select>}</Field>
           {f.type !== "free_delivery" && <Field label={f.type === "percent" ? "Percent (%)" : "Amount (৳)"}>{(i) => <Input id={i} type="number" min="0" value={f.value} onChange={(e) => set("value", e.target.value)} />}</Field>}
@@ -64,7 +64,7 @@ export default function Coupons() {
         {q.isLoading ? <TableSkeleton rows={4} cols={6} />
           : q.isError && !q.data ? <ErrorState error={q.error} onRetry={q.refetch} />
           : rows.length === 0 ? <EmptyState title="No coupons yet" text="Create a code like EID20 to boost sales." action={<Button onClick={() => setEdit({})}>Create coupon</Button>} /> : (
-            <div className="overflow-x-auto"><table className="w-full text-sm">
+            <div className="overflow-x-auto"><table className="w-full text-sm min-w-[50rem]">
               <thead><tr><Th>Code</Th><Th>Discount</Th><Th>Rules</Th><Th>Used</Th><Th>Valid until</Th><Th>Status</Th><Th className="text-right">Actions</Th></tr></thead>
               <tbody className="divide-y divide-line">{rows.map((c) => { const [tone, label] = state(c); return (
                 <tr key={c._id}>

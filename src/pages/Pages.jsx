@@ -21,7 +21,7 @@ function EditorForm({ page, onBack, toast, qc }) {
   return (
     <form onSubmit={submit}>
       <PageHeader title={page ? `Edit: ${page.title}` : "New page"} subtitle={page ? `Address: /page/${page.slug}` : "Shown in the shop footer."} actions={<><Button type="button" variant="secondary" onClick={onBack}><ArrowLeft size={16} /> Back</Button><Button type="submit" loading={save.isPending}>Save page</Button></>} />
-      <div className="grid gap-5 lg:grid-cols-[1fr_20rem]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <Card className="p-5 space-y-4">
           <Field label="Title *">{(i) => <Input id={i} maxLength={120} value={f.title} onChange={(e) => set("title", e.target.value)} />}</Field>
           {!page && <Field label="Page address" hint="Optional. Letters and dashes, e.g. shipping-info">{(i) => <Input id={i} value={f.slug} onChange={(e) => set("slug", e.target.value)} />}</Field>}
@@ -50,7 +50,7 @@ export default function Pages() {
       <PageHeader title="Pages" subtitle="About us, privacy policy, FAQ and more. Edit the text any time." actions={<Button onClick={() => setEditing(null)}><Plus size={16} /> New page</Button>} />
       <Card>
         {q.isLoading ? <ListSkeleton rows={4} /> : q.isError ? <ErrorState error={q.error} onRetry={q.refetch} /> : rows.length === 0 ? <EmptyState title="No pages yet" /> : (
-          <div className="overflow-x-auto"><table className="w-full text-sm">
+          <div className="overflow-x-auto"><table className="w-full text-sm min-w-[34rem]">
             <thead><tr><Th>Title</Th><Th>Address</Th><Th>Status</Th><Th className="text-right">Actions</Th></tr></thead>
             <tbody className="divide-y divide-line">{rows.map((p) => (
               <tr key={p._id}>

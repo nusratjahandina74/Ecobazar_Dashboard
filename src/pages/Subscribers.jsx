@@ -22,7 +22,7 @@ export default function Subscribers() {
         {list.isLoading ? <TableSkeleton rows={5} cols={4} />
           : list.isError && !list.data ? <ErrorState error={list.error} onRetry={list.refetch} />
           : rows.length === 0 ? <EmptyState title="No subscribers yet" text="The sign-up box is in the shop footer and on the home page." /> : (
-            <div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr><Th>Email</Th><Th>Subscribed</Th><Th className="text-right">Remove</Th></tr></thead>
+            <div className="overflow-x-auto"><table className="w-full text-sm min-w-[26rem]"><thead><tr><Th>Email</Th><Th>Subscribed</Th><Th className="text-right">Remove</Th></tr></thead>
               <tbody className="divide-y divide-line">{rows.map((s) => <tr key={s._id}><Td>{s.email}</Td><Td className="text-slate">{dateTime(s.createdAt)}</Td><Td><div className="flex justify-end"><IconButton label={`Remove ${s.email}`} onClick={() => rm.mutate(s._id)}><Trash2 size={16} /></IconButton></div></Td></tr>)}</tbody></table></div>)}
         <Pagination pagination={list.data?.pagination} onPage={setPage} onLimit={(n) => { setLimit(n); setPage(1); }} />
       </Card>

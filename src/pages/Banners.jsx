@@ -26,7 +26,7 @@ function BannerModal({ banner, onClose }) {
         <Field label="Image" error={!preview && err ? err : ""}>{(i) => (<div className="space-y-2">{preview && <img src={preview} alt="" className="w-full aspect-[8/3] object-cover rounded-lg border border-line" />}<input id={i} type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm" /></div>)}</Field>
         <Field label="Headline">{(i) => <Input id={i} maxLength={120} value={f.title} onChange={(e) => set("title", e.target.value)} />}</Field>
         <Field label="Sub headline">{(i) => <Input id={i} maxLength={200} value={f.subtitle} onChange={(e) => set("subtitle", e.target.value)} />}</Field>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="Button text">{(i) => <Input id={i} maxLength={40} value={f.buttonText} onChange={(e) => set("buttonText", e.target.value)} placeholder="Shop now" />}</Field>
           <Field label="Button link" hint="e.g. /shop">{(i) => <Input id={i} value={f.link} onChange={(e) => set("link", e.target.value)} />}</Field>
           <Field label="Position" hint="Lower numbers show first">{(i) => <Input id={i} type="number" value={f.order} onChange={(e) => set("order", e.target.value)} />}</Field>
@@ -50,7 +50,7 @@ export default function Banners() {
       {q.isLoading ? <ListSkeleton rows={4} /> : q.isError ? <ErrorState error={q.error} onRetry={q.refetch} /> : rows.length === 0 ? (
         <Card><EmptyState title="No banners yet" text="Add a banner to show a slider on your shop home page." action={<Button onClick={() => setEdit({})}>Add banner</Button>} /></Card>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {rows.map((b) => (
             <Card key={b._id} className="overflow-hidden">
               <img src={assetUrl(b.image)} alt={b.title || "Banner"} loading="lazy" className="w-full aspect-[8/3] object-cover bg-canvas" />

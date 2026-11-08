@@ -112,7 +112,7 @@ export default function Products() {
           : rows.length === 0 ? <EmptyState title="No products found" text="Try different filters, or add your first product." action={writable && <Link to="/products/new"><Button><Plus size={16} />Add product</Button></Link>} />
           : (
             <div className={`overflow-x-auto transition-opacity ${list.isPlaceholderData ? "opacity-60" : ""}`}>
-              <table className="w-full text-sm">
+              <table className="w-full text-sm min-w-[56rem]">
                 <thead><tr><Th className="w-10"><Checkbox checked={allOnPage} onChange={togglePage} aria-label="Select all on this page" /></Th><Th>Product</Th><Th>Category</Th><Th className="text-right">Price</Th><Th className="text-right">Stock</Th><Th>Status</Th><Th className="text-right">Actions</Th></tr></thead>
                 <tbody className="divide-y divide-line">
                   {rows.map((p) => <Row key={p._id} p={p} selected={selected.has(p._id)} onSelect={toggle} onView={setViewId} onStatus={onStatus} onDelete={setToDelete} writable={writable} canDelete={can("products:delete")} threshold={threshold} busy={statusMut.isPending && statusMut.variables?.p._id === p._id} />)}
