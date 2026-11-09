@@ -19,7 +19,13 @@ export default function Customers() {
           : list.isError && !list.data ? <ErrorState error={list.error} onRetry={list.refetch} />
           : rows.length === 0 ? <EmptyState title="No customers found" /> : (
             <div className="overflow-x-auto"><table className="w-full text-sm min-w-[44rem]">
-              <thead><tr><Th>Customer</Th><Th>Phone</Th><Th className="text-right">Orders</Th><Th className="text-right">Total spent</Th><Th>Joined</Th><Th>Account</Th></tr></thead>
+              <thead><tr><Th>Customer</Th>
+              {/* <Th>Phone</Th> */}
+              <Th className="text-right">Orders</Th>
+              <Th className="text-right">Total spent</Th>
+              <Th>Joined</Th>
+              <Th>Account</Th>
+              </tr></thead>
               <tbody className="divide-y divide-line">{rows.map((u) => (
                 <tr key={u._id}>
                   <Td><p className="font-medium">{fullName(u)}</p><p className="text-xs text-slate">{u.email}</p></Td>
