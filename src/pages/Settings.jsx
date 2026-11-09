@@ -15,9 +15,15 @@ function useSection(section, initial) {
   const toast = useToast(); const qc = useQueryClient();
   const [form, setForm] = useState(initial); const [dirty, setDirty] = useState(false);
   const key = JSON.stringify(initial);
-  // reset the form only when the saved values really change (callers build `initial` on every render)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { setForm(initial); setDirty(false); }, [key]);
+useEffect(() => { 
+  setForm(initial); 
+  setDirty(false); 
+}, [initial?.name, initial?.returnPolicy]); 
+useEffect(() => { 
+  setForm(initial); 
+  setDirty(false); 
+}, []); 
+
   const set = (k, v) => { setForm((s) => ({ ...s, [k]: v })); setDirty(true); };
   const save = useMutation({
     mutationFn: (body) => api.saveSettings(section, body),
