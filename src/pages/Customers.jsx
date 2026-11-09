@@ -23,7 +23,7 @@ export default function Customers() {
               <tbody className="divide-y divide-line">{rows.map((u) => (
                 <tr key={u._id}>
                   <Td><p className="font-medium">{fullName(u)}</p><p className="text-xs text-slate">{u.email}</p></Td>
-                  <Td className="text-slate">{u.phoneNumber || "-"}</Td><Td className="text-right">{u.orders}</Td><Td className="text-right font-semibold">{bdt(u.totalSpent)}</Td>
+                  {/* <Td className="text-slate">{u.phoneNumber || "-"}</Td><Td className="text-right">{u.orders}</Td><Td className="text-right font-semibold">{bdt(u.totalSpent)}</Td> */}
                   <Td className="text-slate">{dateOnly(u.createdAt)}</Td>
                   <Td><div className="flex gap-1.5">{u.isHold && <Badge tone="red">On hold</Badge>}<Badge tone={u.isVerified ? "green" : "amber"}>{u.isVerified ? "Verified" : "Unverified"}</Badge></div></Td>
                 </tr>))}</tbody>

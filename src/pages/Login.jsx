@@ -22,8 +22,8 @@ export default function Login() {
       <div className="hidden lg:flex flex-col justify-between bg-forest text-white p-12">
         <div className="flex items-center gap-3"><img src="/favicon.svg" alt="" className="w-10 h-10 rounded-xl" /><span className="text-xl font-bold">EcoBazaar</span></div>
         <div>
-          <h1 className="text-4xl font-bold leading-tight max-w-md">Run your shop from one place.</h1>
-          <p className="mt-4 text-white/70 max-w-md">Orders, stock, delivery, couriers and sales reports - edit everything without touching code.</p>
+          <h1 className="text-4xl font-bold leading-tight max-w-md">Manage Your Whole Business from One Central Hub.</h1>
+          <p className="mt-4 text-white/70 max-w-md">A powerful all-in-one platform to manage orders, inventory, courier tracking, and business analytics seamlessly.</p>
         </div>
         <p className="text-sm text-white/50">Admin access only</p>
       </div>
