@@ -20,7 +20,7 @@ export default function Customers() {
           : rows.length === 0 ? <EmptyState title="No customers found" /> : (
             <div className="overflow-x-auto"><table className="w-full text-sm min-w-[44rem]">
               <thead><tr><Th>Customer</Th>
-              {/* <Th>Phone</Th> */}
+              <Th>Phone</Th>
               <Th className="text-right">Orders</Th>
               <Th className="text-right">Total spent</Th>
               <Th>Joined</Th>
@@ -29,7 +29,7 @@ export default function Customers() {
               <tbody className="divide-y divide-line">{rows.map((u) => (
                 <tr key={u._id}>
                   <Td><p className="font-medium">{fullName(u)}</p><p className="text-xs text-slate">{u.email}</p></Td>
-                  {/* <Td className="text-slate">{u.phoneNumber || "-"}</Td><Td className="text-right">{u.orders}</Td><Td className="text-right font-semibold">{bdt(u.totalSpent)}</Td> */}
+                  <Td className="text-slate">{u.phoneNumber || "-"}</Td><Td className="text-right">{u.orders}</Td><Td className="text-right font-semibold">{bdt(u.totalSpent)}</Td>
                   <Td className="text-slate">{dateOnly(u.createdAt)}</Td>
                   <Td><div className="flex gap-1.5">{u.isHold && <Badge tone="red">On hold</Badge>}<Badge tone={u.isVerified ? "green" : "amber"}>{u.isVerified ? "Verified" : "Unverified"}</Badge></div></Td>
                 </tr>))}</tbody>
