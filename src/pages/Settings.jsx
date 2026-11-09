@@ -11,27 +11,59 @@ const BD = 6 * 3600 * 1000;
 const isoToInput = (iso) => (iso ? new Date(new Date(iso).getTime() + BD).toISOString().slice(0, 16) : "");
 const inputToIso = (v) => (v ? new Date(`${v}:00+06:00`).toISOString() : null);
 
-function useSection(section, initial) {
-  const toast = useToast(); const qc = useQueryClient();
-  const [form, setForm] = useState(initial); const [dirty, setDirty] = useState(false);
-  const key = JSON.stringify(initial);
-useEffect(() => { 
-  setForm(initial); 
-  setDirty(false); 
-}, [initial?.name, initial?.returnPolicy]); 
-useEffect(() => { 
-  setForm(initial); 
-  setDirty(false); 
-}, []); 
+// function useSection(section, initial) {
+//   const toast = useToast(); const qc = useQueryClient();
+//   const [form, setForm] = useState(initial); const [dirty, setDirty] = useState(false);
+//   const key = JSON.stringify(initial);
+// useEffect(() => { 
+//   setForm(initial); 
+//   setDirty(false); 
+// }, [initial?.name, initial?.returnPolicy]); 
+// useEffect(() => { 
+//   setForm(initial); 
+//   setDirty(false); 
+// }, []); 
 
-  const set = (k, v) => { setForm((s) => ({ ...s, [k]: v })); setDirty(true); };
+//   const set = (k, v) => { setForm((s) => ({ ...s, [k]: v })); setDirty(true); };
+//   const save = useMutation({
+//     mutationFn: (body) => api.saveSettings(section, body),
+//     onSuccess: (r) => { toast.success("Settings saved"); qc.setQueryData(["settings"], (old) => old && ({ ...old, data: r.data })); setDirty(false); },
+//     onError: (e) => toast.error(e.message),
+//   });
+//   return { form, set, save, dirty };
+// }
+function useSection(section, initial) {
+  const toast = useToast(); 
+  const qc = useQueryClient();
+  const [form, setForm] = useState(initial); 
+  const [dirty, setDirty] = useState(false);
+  useEffect(() => { 
+    setForm(initial); 
+    setDirty(false); 
+  }, [initial ? JSON.stringify(initial) : '']); 
+
+  const set = (k, v) => { 
+    setForm((s) => {
+      const nextState = { ...s, [k]: v };
+      const isChanged = JSON.stringify(nextState) !== JSON.stringify(initial);
+      setDirty(isChanged);
+      return nextState;
+    }); 
+  };
+
   const save = useMutation({
     mutationFn: (body) => api.saveSettings(section, body),
-    onSuccess: (r) => { toast.success("Settings saved"); qc.setQueryData(["settings"], (old) => old && ({ ...old, data: r.data })); setDirty(false); },
+    onSuccess: (r) => { 
+      toast.success("Settings saved"); 
+      qc.setQueryData(["settings"], (old) => old && ({ ...old, data: r.data })); 
+      setDirty(false); 
+    },
     onError: (e) => toast.error(e.message),
   });
+
   return { form, set, save, dirty };
 }
+
 const SaveBar = ({ dirty, loading, disabled }) => (
   <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 sm:px-5 py-4 border-t border-line bg-canvas rounded-b-xl">
     <Button type="submit" loading={loading} disabled={!dirty || disabled}>Save changes</Button>
